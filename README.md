@@ -1,4 +1,4 @@
-# jjazure-terraform
+# JJ Azure automation with Terraform
 
 https://docs.microsoft.com/en-us/azure/virtual-machines/linux/terraform-create-complete-vm?toc=%2Fen-us%2Fazure%2Fterraform%2Ftoc.json&bc=%2Fen-us%2Fazure%2Fbread%2Ftoc.json
 
