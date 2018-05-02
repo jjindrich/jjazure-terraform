@@ -2,6 +2,11 @@
 
 https://docs.microsoft.com/en-us/azure/virtual-machines/linux/terraform-create-complete-vm?toc=%2Fen-us%2Fazure%2Fterraform%2Ftoc.json&bc=%2Fen-us%2Fazure%2Fbread%2Ftoc.json
 
+Terraform intro
+- State https://www.terraform.io/intro/getting-started/build.html
+- Provisioning https://www.terraform.io/intro/getting-started/provision.html
+- Variables
+https://www.terraform.io/intro/getting-started/variables.html
 
 
 ## Running in Azure Cloud Shell console
