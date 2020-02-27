@@ -6,15 +6,11 @@ provider "azurerm" {
 resource "azurerm_resource_group" "jjterraformgroup" {
   name     = "JJTerraform"
   location = "westeurope"
-
-  tags = {
-    environment = "JJ Terraform Demo"
-  }
 }
 
-resource "azurerm_virtual_network" "jjterraformvnet" {
+resource "azurerm_virtual_network" "jjtfvnet" {
   resource_group_name = azurerm_resource_group.jjterraformgroup.name
-  name                = "jjterraformvnet"
+  name                = "jjtfvnet"
   address_space       = ["10.0.0.0/16"]
   location            = "westeurope"
 }

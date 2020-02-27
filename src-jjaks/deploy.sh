@@ -7,7 +7,6 @@ subscription=$(az account show -o tsv --query id)
 clientApplicationId=$(az keyvault secret show --vault-name jjkeyvault --name tfClientApplicationId -o tsv --query value)
 clientSecret=$(az keyvault secret show --vault-name jjkeyvault --name tfClientSecret -o tsv --query value)
 
-
 export ARM_SUBSCRIPTION_ID=$subscription
 export ARM_TENANT_ID=$tenant
 export ARM_CLIENT_ID=$clientApplicationId
@@ -18,4 +17,8 @@ export ARM_CLIENT_SECRET=$clientSecret
 
 terraform init
 terraform plan
+
+export TF_VAR_client_id=<service-principal-appid>
+export TF_VAR_client_secret=<service-principal-password>
+
 terraform apply

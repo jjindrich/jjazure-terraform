@@ -7,9 +7,11 @@ Terraform intro
 - Variables
 https://www.terraform.io/intro/getting-started/variables.html
 
+Samples https://github.com/terraform-providers/terraform-provider-azurerm/tree/master/examples
+
 ## Running locally
 
-Check script [deploy.sh](deploy.sh)
+Check script [deploy.sh](src-aks\deploy.sh)
 
 ## Running in Azure Cloud Shell console
 
@@ -20,5 +22,5 @@ Terraform is automatically authenticated to your azure subscription.
 ```bash
 terraform init
 terraform plan
-terraform apply
+terraform apply -auto-approve
 ```
