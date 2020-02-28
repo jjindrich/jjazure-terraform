@@ -18,7 +18,4 @@ export ARM_CLIENT_SECRET=$clientSecret
 terraform init
 terraform plan
 
-export TF_VAR_client_id=<service-principal-appid>
-export TF_VAR_client_secret=<service-principal-password>
-
-terraform apply
+terraform apply -auto-approve
