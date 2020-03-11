@@ -59,7 +59,7 @@ resource "azurerm_kubernetes_cluster_node_pool" "k8s-npwin" {
   max_count             = 3
   vnet_subnet_id        = data.azurerm_subnet.akssubnet.id
   node_taints = [
-    "kubernetes.io/os=windows:NoSchedule"
+    "os=windows:NoSchedule"
   ]
   depends_on = [azurerm_kubernetes_cluster.k8s]
 }
