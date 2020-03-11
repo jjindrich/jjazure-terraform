@@ -7,16 +7,9 @@ provider "helm" {
     cluster_ca_certificate = base64decode(azurerm_kubernetes_cluster.k8s.kube_config.0.cluster_ca_certificate)
   }
 }
-/* SMAZAT
-data "helm_repository" "stable" {
-  name = "stable"
-  url  = "https://kubernetes-charts.storage.googleapis.com"
-}
-*/
 
 # Install nginx ingress controller
 resource "kubernetes_namespace" "nginx_ingress" {
-  provider = kubernetes.aks-ci
   metadata {
     name = "ingress-basic"
   }
@@ -31,5 +24,30 @@ resource "helm_release" "nginx_ingress" {
     name  = "controller.replicaCount"
     value = "1"
   }
+  depends_on = [kubernetes_cluster_role_binding.tiller]
+}
+
+# Install nginx ingress controller Internal
+resource "kubernetes_namespace" "nginx_ingress_internal" {
+  metadata {
+    name = "ingress-basic-internal"
+  }
+  depends_on = [azurerm_kubernetes_cluster.k8s]
+}
+resource "helm_release" "nginx_ingress_internal" {
+  name       = "nginx-ingress-internal"
+  chart      = "stable/nginx-ingress"
+  timeout    = 2400
+  namespace  = kubernetes_namespace.nginx_ingress_internal.metadata.0.name
+  values = [<<EOF
+controller:
+  replicaCount: 1
+  service:
+    loadBalancerIP: ${var.ingress_load_balancer_ip}
+    annotations:
+      service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+      kubernetes.io/ingress.class: nginx-internal
+EOF
+  ]
   depends_on = [kubernetes_cluster_role_binding.tiller]
 }

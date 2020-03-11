@@ -15,25 +15,51 @@ resource "azurerm_kubernetes_cluster" "k8s" {
     enable_auto_scaling = true
     vnet_subnet_id      = data.azurerm_subnet.akssubnet.id
   }
-  /*
+
+  windows_profile {
+    admin_username = var.cluster_windows_username
+    admin_password = var.cluster_windows_password
+  }
+
   role_based_access_control {
     enabled = true
   }
-  */
+
   service_principal {
     client_id     = data.azurerm_key_vault_secret.spn_id.value
     client_secret = data.azurerm_key_vault_secret.spn_secret.value
   }
-  /*
+
   addon_profile {
+    kube_dashboard {
+      enabled = true
+    }
     oms_agent {
       enabled                    = true
-      log_analytics_workspace_id = "${azurerm_log_analytics_workspace.default.id}"
+      log_analytics_workspace_id = data.azurerm_log_analytics_workspace.jjanalytics.id
     }
   }
-*/
+
   network_profile {
     network_plugin    = "azure"
     load_balancer_sku = "standard"
   }
+}
+
+# add Windows nodepool
+resource "azurerm_kubernetes_cluster_node_pool" "k8s-npwin" {
+  name                  = "npwin"
+  kubernetes_cluster_id = azurerm_kubernetes_cluster.k8s.id
+  node_count            = 1
+  vm_size               = "Standard_B2ms"
+  availability_zones    = [1, 2, 3]
+  os_type               = "Windows"
+  enable_auto_scaling   = true
+  min_count             = 1
+  max_count             = 3
+  vnet_subnet_id        = data.azurerm_subnet.akssubnet.id
+  node_taints = [
+    "kubernetes.io/os=windows:NoSchedule"
+  ]
+  depends_on = [azurerm_kubernetes_cluster.k8s]
 }

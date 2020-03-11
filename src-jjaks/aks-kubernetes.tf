@@ -4,7 +4,6 @@ provider "kubernetes" {
   client_certificate     = base64decode(azurerm_kubernetes_cluster.k8s.kube_config.0.client_certificate)
   client_key             = base64decode(azurerm_kubernetes_cluster.k8s.kube_config.0.client_key)
   cluster_ca_certificate = base64decode(azurerm_kubernetes_cluster.k8s.kube_config.0.cluster_ca_certificate)
-  alias                  = "aks-ci"
 }
 
 # Create tiller service account and cluster role binding
@@ -13,12 +12,10 @@ resource "kubernetes_service_account" "tiller" {
     name      = "tiller"
     namespace = "kube-system"
   }
-  automount_service_account_token = true
-  depends_on                      = [azurerm_kubernetes_cluster.k8s]
 }
 resource "kubernetes_cluster_role_binding" "tiller" {
   metadata {
-    name = "tiller"
+    name = kubernetes_service_account.tiller.metadata.0.name
   }
   role_ref {
     kind      = "ClusterRole"
@@ -28,14 +25,31 @@ resource "kubernetes_cluster_role_binding" "tiller" {
   subject {
     kind      = "ServiceAccount"
     name      = kubernetes_service_account.tiller.metadata.0.name
-    api_group = ""
     namespace = "kube-system"
   }
   depends_on = [kubernetes_service_account.tiller]
 }
 
-# Grant cluster-admin rights to the AAD role
+# Grant cluster-admin rights to the default service account
 resource "kubernetes_cluster_role_binding" "default" {
+  metadata {
+    name = "default"
+  }
+  role_ref {
+    api_group = "rbac.authorization.k8s.io"
+    kind      = "ClusterRole"
+    name      = "cluster-admin"
+  }
+  subject {
+    kind      = "ServiceAccount"
+    name      = "default"
+    namespace = "default"    
+  }
+  depends_on = [kubernetes_service_account.tiller]
+}
+/*
+# Grant cluster-admin rights to the AAD role
+resource "kubernetes_cluster_role_binding" "default-aad" {
   metadata {
     name = "default"
   }
@@ -49,8 +63,9 @@ resource "kubernetes_cluster_role_binding" "default" {
     kind      = "Group"
     name      = var.aad_aks_admin_role
   }
+  depends_on = [kubernetes_service_account.tiller]
 }
-
+*/
 # Grant cluster-admin rights to the kubernetes-dashboard account
 resource "kubernetes_cluster_role_binding" "dashboard" {
   metadata {
@@ -66,17 +81,5 @@ resource "kubernetes_cluster_role_binding" "dashboard" {
     name      = "kubernetes-dashboard"
     namespace = "kube-system"
   }
+  depends_on = [kubernetes_service_account.tiller]
 }
-
-# Save kube-config into azure_config file
-/*
-resource "null_resource" "save-kube-config" {
-  triggers = {
-    config = "${azurerm_kubernetes_cluster.k8s.kube_config_raw}"
-  }
-  provisioner "local-exec" {
-    command = "mkdir -p ${path.module}/.kube && echo '${azurerm_kubernetes_cluster.k8s.kube_config_raw}' > ${path.module}/.kube/azure_config && chmod 0600 ${path.module}/.kube/azure_config"
-  }
-  depends_on = [azurerm_kubernetes_cluster.k8s]
-}
-*/

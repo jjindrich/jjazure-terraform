@@ -20,7 +20,12 @@ data "azurerm_key_vault_secret" "spn_secret" {
   name         = "tfClientSecret"
   key_vault_id = data.azurerm_key_vault.jjkeyvault.id
 }
+data "azurerm_log_analytics_workspace" "jjanalytics" {
+  name                = "jjdev-analytics"
+  resource_group_name = "jjdevmanagement"
+}
 
+# create resource group
 resource "azurerm_resource_group" "k8s" {
   name     = var.resource_group_name
   location = local.location
