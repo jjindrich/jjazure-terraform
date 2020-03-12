@@ -1,3 +1,12 @@
+terraform {
+  backend "azurerm" {
+    resource_group_name   = "jjdevmanagement"
+    storage_account_name  = "jjtfstate"
+    container_name        = "jjaks"
+    key                   = "terraform.tfstate"
+  }
+}
+
 provider "azurerm" {
   features {}
 }
