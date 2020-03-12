@@ -1,4 +1,5 @@
 resource_group_name = "jjmicroservices-test-rg"
+resource_group_node_name = "jjmicroservices-test-aks-rg"
 cluster_name = "jjakstest"
 cluster_windows_username = "cloudadmin"
 cluster_windows_password = "heslo-123"

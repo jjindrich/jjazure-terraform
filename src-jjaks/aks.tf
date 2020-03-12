@@ -4,6 +4,7 @@ resource "azurerm_kubernetes_cluster" "k8s" {
   location            = local.location
   resource_group_name = azurerm_resource_group.k8s.name
   dns_prefix          = var.cluster_name
+  # node_resource_group = resource_group_node_name
 
   default_node_pool {
     name                = "agentpool"

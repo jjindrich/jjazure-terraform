@@ -4,9 +4,9 @@ provider "azurerm" {
 
 # refer to existing resources
 data "azurerm_subnet" "akssubnet" {
-  name                 = "DmzAks"
-  virtual_network_name = "JJDevV2NetworkApp"
-  resource_group_name  = "JJDevV2-Infra"
+  name                 = local.network_reference.subnet_name
+  virtual_network_name = local.network_reference.network_name
+  resource_group_name  = local.network_reference.resource_group_name
 }
 data "azurerm_key_vault" "jjkeyvault" {
   name                = var.keyvault_name
@@ -21,8 +21,8 @@ data "azurerm_key_vault_secret" "spn_secret" {
   key_vault_id = data.azurerm_key_vault.jjkeyvault.id
 }
 data "azurerm_log_analytics_workspace" "jjanalytics" {
-  name                = "jjdev-analytics"
-  resource_group_name = "jjdevmanagement"
+  name                = local.monitoring.analytics_name
+  resource_group_name = local.monitoring.resource_group_name
 }
 
 # create resource group
