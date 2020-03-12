@@ -16,3 +16,15 @@ stages:
     - task: TerraformInstaller@0
       inputs:
         terraformVersion: '0.12.3'
+    - script: |
+        terraform -version
+        terraform init
+        terraform plan
+      workingDirectory: $(pipeline.workspace)/src-jjaks
+      failOnStderr: true
+      displayName: 'Terraform plan'
+      env:
+        ARM_TENANT_ID: $(tenantId)
+        ARM_SUBSCRIPTION_ID: $(subscriptionId)
+        ARM_CLIENT_ID: $(clientId)
+        ARM_CLIENT_SECRET: $(clientSecret)
