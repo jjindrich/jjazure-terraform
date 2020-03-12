@@ -20,7 +20,7 @@ stages:
         terraform -version
         terraform init
         terraform plan
-      workingDirectory: $(pipeline.workspace)/src-jjaks
+      workingDirectory: $(pipeline.workspace)/jjazure-terraform/src-jjaks
       failOnStderr: true
       displayName: 'Terraform plan'
       env:
