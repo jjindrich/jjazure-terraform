@@ -13,7 +13,7 @@ stages:
   - job: 'Prepare'
     displayName: 'Prepare'
     steps:
-    - script: echo $(pipeline.workspace)
+    - script: ls $(pipeline.workspace)
       displayName: 'Run a one-line script'
     - task: TerraformInstaller@0
       inputs:
