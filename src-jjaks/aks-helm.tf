@@ -47,6 +47,7 @@ resource "helm_release" "nginx_ingress_internal" {
   namespace  = kubernetes_namespace.nginx_ingress_internal.metadata.0.name
   values = [<<EOF
 controller:
+  ingressClass: nginx-internal
   replicaCount: 1
   service:
     loadBalancerIP: ${var.ingress_load_balancer_ip}
