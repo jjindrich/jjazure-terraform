@@ -29,7 +29,7 @@ resource "helm_release" "nginx_ingress" {
     name  = "controller.replicaCount"
     value = "1"
   }
-  depends_on = [kubernetes_cluster_role_binding.tiller]
+  depends_on = [kubernetes_namespace.nginx_ingress]
 }
 
 # Install nginx ingress controller Internal
@@ -56,5 +56,5 @@ controller:
       kubernetes.io/ingress.class: nginx-internal
 EOF
   ]
-  depends_on = [kubernetes_cluster_role_binding.tiller]
+  depends_on = [kubernetes_namespace.nginx_ingress_internal]
 }
