@@ -4,7 +4,7 @@ resource "azurerm_kubernetes_cluster" "k8s" {
   location            = local.location
   resource_group_name = azurerm_resource_group.k8s.name
   dns_prefix          = var.cluster_name
-  # node_resource_group = resource_group_node_name
+  node_resource_group = var.resource_group_node_name
 
   default_node_pool {
     name                = "agentpool"
@@ -18,12 +18,17 @@ resource "azurerm_kubernetes_cluster" "k8s" {
   }
 
   windows_profile {
-    admin_username = var.cluster_windows_username
-    admin_password = var.cluster_windows_password
+    admin_username = "cloudadmin"
+    admin_password = data.azurerm_key_vault_secret.node_windows_password.value
   }
 
   role_based_access_control {
     enabled = true
+    azure_active_directory {
+      client_app_id = data.azurerm_key_vault_secret.client_id.value
+      server_app_id     = data.azurerm_key_vault_secret.spn_id.value
+      server_app_secret = data.azurerm_key_vault_secret.spn_secret.value
+    }
   }
 
   service_principal {

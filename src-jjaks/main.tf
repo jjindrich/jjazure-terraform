@@ -13,11 +13,19 @@ data "azurerm_key_vault" "jjkeyvault" {
   resource_group_name = var.keyvault_rg
 }
 data "azurerm_key_vault_secret" "spn_id" {
-  name         = "tfClientApplicationId"
+  name         = "aksserverApplicationId"
   key_vault_id = data.azurerm_key_vault.jjkeyvault.id
 }
 data "azurerm_key_vault_secret" "spn_secret" {
-  name         = "tfClientSecret"
+  name         = "aksserverApplicationSecret"
+  key_vault_id = data.azurerm_key_vault.jjkeyvault.id
+}
+data "azurerm_key_vault_secret" "client_id" {
+  name         = "aksclientApplicationId"
+  key_vault_id = data.azurerm_key_vault.jjkeyvault.id
+}
+data "azurerm_key_vault_secret" "node_windows_password" {
+  name         = "akswinpassword"
   key_vault_id = data.azurerm_key_vault.jjkeyvault.id
 }
 data "azurerm_log_analytics_workspace" "jjanalytics" {

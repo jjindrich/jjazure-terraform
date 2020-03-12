@@ -1,5 +1,5 @@
 # powershell
-echo "Setting environment variables for Terraform"
+Write-Output "Setting environment variables for Terraform"
 $tenant=$(az account show -o tsv --query tenantId)
 $subscription=$(az account show -o tsv --query id)
 
@@ -14,8 +14,9 @@ $Env:ARM_CLIENT_SECRET=$clientSecret
 
 # https://releases.hashicorp.com/terraform/0.12.23/terraform_0.12.23_windows_amd64.zip
 
-echo "Running Terraform deployment"
+Write-Output "Running Terraform deployment"
 terraform init
-terraform plan
+terraform import azurerm_resource_group.k8s /subscriptions/$subscription/resourceGroups/jjmicroservices-rg
+#terraform plan
 
 terraform apply -auto-approve

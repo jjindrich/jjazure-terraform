@@ -17,6 +17,7 @@ export ARM_CLIENT_SECRET=$clientSecret
 
 echo "Running Terraform deployment"
 terraform init
-terraform plan
+terraform import azurerm_resource_group.k8s /subscriptions/$subscription/resourceGroups/jjmicroservices-rg
+#terraform plan
 
 terraform apply -auto-approve

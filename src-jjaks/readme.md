@@ -22,7 +22,7 @@ deploy.sh
 Get Aks credentials
 
 ```bash
-az aks get-credentials --resource-group jjmicroservices-test-rg --name jjakstest --admin
+az aks get-credentials --resource-group jjmicroservices-rg --name jjaks --admin
 kubectl config get-contexts
 kubectl config set-context jjakstest-admin
 kubectl get pods -A
