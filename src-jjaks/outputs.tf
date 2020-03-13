@@ -1,5 +1,5 @@
 output "kube_config_raw" {
-  value = azurerm_kubernetes_cluster.k8s.kube_config_raw
+  value = azurerm_kubernetes_cluster.k8s.kube_admin_config_raw
   sensitive   = true
 }
 
@@ -8,9 +8,9 @@ output "config" {
 
 Run the following commands to configure kubernetes clients:
 
-$ terraform output kube_config_raw > ~/.kube/aksconfig
-$ export KUBECONFIG=~/.kube/aksconfig
+$ terraform output kube_config_raw
+$ bash: terraform output kube_config_raw > ~/.kube/config
+$ pwsh: terraform output kube_config_raw > ~\.kube\config
 
 CONFIGURE
-
 }
