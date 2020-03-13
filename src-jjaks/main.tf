@@ -5,6 +5,11 @@ terraform {
     container_name       = "jjaks"
     key                  = "terraform.tfstate"
   }
+  required_providers {
+    azurerm    = "~> 2.1"
+    helm       = "~> 1.0"
+    kubernetes = "~> 1.11"
+  }
 }
 
 provider "azurerm" {
