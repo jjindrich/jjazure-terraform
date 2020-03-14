@@ -1,15 +1,19 @@
 # JJ Azure - Terraform for AKS
 
-https://docs.microsoft.com/en-us/azure/terraform/terraform-create-k8s-cluster-with-tf-and-aks
+This repo provides Terraform scripts to provision **AKS with RBAC and Nginx ingress**. 
 
-Samples
+Basic steps how to start
+
+- https://docs.microsoft.com/en-us/azure/terraform/terraform-create-k8s-cluster-with-tf-and-aks
+
+Samples for AKS provisioning
 
 - https://github.com/Azure/terraform/tree/master/quickstart/301-aks-enterprise
 - https://github.com/terraform-providers/terraform-provider-azurerm/tree/master/examples/kubernetes
 - https://medium.com/@nicolas.yuen/deploying-aks-with-terraform-on-azure-devops-65c7ef95d737
 - https://github.com/nyuen/AKS-Articles/tree/master/1-terraform
 
-Helm and TF
+Samples for Helm deployment
 
 - https://blog.dbi-services.com/provisioning-a-aks-cluster-and-kubeinvaders-with-terraform-aks/
 - https://learnk8s.io/blog/get-start-terraform-aks

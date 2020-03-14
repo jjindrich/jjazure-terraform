@@ -9,15 +9,19 @@ https://www.terraform.io/intro/getting-started/variables.html
 
 Samples https://github.com/terraform-providers/terraform-provider-azurerm/tree/master/examples
 
-## Running locally
+## Terraform and Azure Cloud Adoption Framework
 
-Check script [deploy.sh](src-aks\deploy.sh)
+Reuse existing resources from **Azure Cloud Adoption Framework**. Check this [repo](src-caf\readme.md).
 
-## Running in Azure Cloud Shell console
+## Terraform and Azure Kubernetes Service AKS
 
-Drag and drop files into cloud shell console
+Setup your AKS deployment with Terraform. Check this [repo](src-aks\readme.md).
 
-Terraform is automatically authenticated to your azure subscription.
+## Running Terraform in Azure Cloud Shell console
+
+Drag and drop files into Azure Cloud shell console. 
+
+Terraform is automatically installed and authenticated to your Azure subscription.
 
 ```bash
 terraform init
