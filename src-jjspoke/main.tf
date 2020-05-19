@@ -51,7 +51,7 @@ resource "azurerm_subnet" "vnet_sub1" {
   name                 = var.network_sub1_name
   resource_group_name  = azurerm_resource_group.rg.name
   virtual_network_name = azurerm_virtual_network.vnet.name
-  address_prefix       = var.network_sub1_address
+  address_prefixes     = var.network_sub1_address
 }
 
 resource "azurerm_virtual_network_peering" "hub-to-spoke" {
