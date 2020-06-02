@@ -28,7 +28,7 @@ resource "helm_release" "nginx_ingress" {
     value = "1"
   }
   set {
-    name  = "service.beta.kubernetes.io/azure-dns-label-name"
+    name  = "controller.service.annotations.service\\.beta\\.kubernetes\\.io/azure-dns-label-name"
     value = var.cluster_name
   }
   depends_on = [kubernetes_namespace.nginx_ingress]
