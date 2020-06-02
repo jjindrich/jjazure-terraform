@@ -3,10 +3,10 @@ provider "helm" {
   version = "~> 1.0"
   kubernetes {
     load_config_file       = false
-    host                   = azurerm_kubernetes_cluster.k8s.kube_admin_config.0.host
-    client_certificate     = base64decode(azurerm_kubernetes_cluster.k8s.kube_admin_config.0.client_certificate)
-    client_key             = base64decode(azurerm_kubernetes_cluster.k8s.kube_admin_config.0.client_key)
-    cluster_ca_certificate = base64decode(azurerm_kubernetes_cluster.k8s.kube_admin_config.0.cluster_ca_certificate)
+    host                   = azurerm_kubernetes_cluster.k8s.kube_config.0.host
+    client_certificate     = base64decode(azurerm_kubernetes_cluster.k8s.kube_config.0.client_certificate)
+    client_key             = base64decode(azurerm_kubernetes_cluster.k8s.kube_config.0.client_key)
+    cluster_ca_certificate = base64decode(azurerm_kubernetes_cluster.k8s.kube_config.0.cluster_ca_certificate)
   }
 }
 data "helm_repository" "stable" {
@@ -39,7 +39,7 @@ resource "kubernetes_namespace" "nginx_ingress_internal" {
   metadata {
     name = "ingress-basic-internal"
   }
-  depends_on = [azurerm_kubernetes_cluster.k8s]
+  depends_on = [azurerm_kubernetes_cluster.k8s,azurerm_role_assignment.k8s-rbac-network]
 }
 resource "helm_release" "nginx_ingress_internal" {
   name       = "nginx-ingress-internal"

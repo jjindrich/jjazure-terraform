@@ -17,6 +17,9 @@ provider "azurerm" {
   features {}
 }
 
+# required permissions to run TF scripts (creates Azure resources and configuring access for System Manageged Identity)
+# Contributor and User Access Administrator
+
 # refer to existing resources
 data "azurerm_subnet" "akssubnet" {
   name                 = local.network_reference.subnet_name
@@ -46,6 +49,13 @@ data "azurerm_key_vault_secret" "node_windows_password" {
 data "azurerm_log_analytics_workspace" "jjanalytics" {
   name                = local.monitoring.analytics_name
   resource_group_name = local.monitoring.resource_group_name
+}
+data "azurerm_resource_group" "rg-network" {
+  name = local.network_reference.resource_group_name
+}
+data "azurerm_container_registry" "acr" {
+  name                = var.acr_name
+  resource_group_name = var.acr_rg
 }
 
 # create resource group

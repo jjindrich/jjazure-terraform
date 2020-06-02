@@ -5,3 +5,5 @@ variable aad_aks_admin_role {}
 variable ingress_load_balancer_ip {}
 variable "keyvault_name" {}
 variable "keyvault_rg" {}
+variable "acr_name" {}
+variable "acr_rg" {}

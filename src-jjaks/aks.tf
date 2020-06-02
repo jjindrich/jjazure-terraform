@@ -24,16 +24,10 @@ resource "azurerm_kubernetes_cluster" "k8s" {
 
   role_based_access_control {
     enabled = true
-    azure_active_directory {
-      client_app_id = data.azurerm_key_vault_secret.client_id.value
-      server_app_id     = data.azurerm_key_vault_secret.spn_id.value
-      server_app_secret = data.azurerm_key_vault_secret.spn_secret.value
-    }
   }
 
-  service_principal {
-    client_id     = data.azurerm_key_vault_secret.spn_id.value
-    client_secret = data.azurerm_key_vault_secret.spn_secret.value
+  identity {
+    type = "SystemAssigned"
   }
 
   addon_profile {
@@ -52,6 +46,7 @@ resource "azurerm_kubernetes_cluster" "k8s" {
   }
 }
 
+/*
 # add Windows nodepool
 resource "azurerm_kubernetes_cluster_node_pool" "k8s-npwin" {
   name                  = "npwin"
@@ -68,4 +63,17 @@ resource "azurerm_kubernetes_cluster_node_pool" "k8s-npwin" {
     "os=windows:NoSchedule"
   ]
   depends_on = [azurerm_kubernetes_cluster.k8s]
+}
+*/
+
+resource "azurerm_role_assignment" "k8s-rbac-network" {
+  scope                = data.azurerm_resource_group.rg-network.id
+  role_definition_name = "Network Contributor"
+  principal_id         = azurerm_kubernetes_cluster.k8s.identity[0].principal_id
+}
+
+resource "azurerm_role_assignment" "k8s-rbac-acr" {
+  scope                = data.azurerm_container_registry.acr.id
+  role_definition_name = "AcrPull"
+  principal_id         = azurerm_kubernetes_cluster.k8s.identity[0].principal_id
 }
