@@ -20,7 +20,7 @@ resource "kubernetes_namespace" "nginx_ingress" {
 resource "helm_release" "nginx_ingress" {
   name       = "nginx-ingress"
   repository = "https://kubernetes-charts.storage.googleapis.com"
-  chart      = "stable/nginx-ingress"
+  chart      = "nginx-ingress"
   timeout    = 2400
   namespace  = kubernetes_namespace.nginx_ingress.metadata.0.name
   set {
@@ -44,7 +44,7 @@ resource "kubernetes_namespace" "nginx_ingress_internal" {
 resource "helm_release" "nginx_ingress_internal" {
   name       = "nginx-ingress-internal"
   repository = "https://kubernetes-charts.storage.googleapis.com"
-  chart      = "stable/nginx-ingress"
+  chart      = "nginx-ingress"
   timeout    = 2400
   namespace  = kubernetes_namespace.nginx_ingress_internal.metadata.0.name
   values = [<<EOF
