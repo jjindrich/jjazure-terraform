@@ -46,7 +46,6 @@ resource "azurerm_kubernetes_cluster" "k8s" {
   }
 }
 
-/*
 # add Windows nodepool
 resource "azurerm_kubernetes_cluster_node_pool" "k8s-npwin" {
   name                  = "npwin"
@@ -64,7 +63,6 @@ resource "azurerm_kubernetes_cluster_node_pool" "k8s-npwin" {
   ]
   depends_on = [azurerm_kubernetes_cluster.k8s]
 }
-*/
 
 resource "azurerm_role_assignment" "k8s-rbac-network" {
   scope                = data.azurerm_resource_group.rg-network.id
