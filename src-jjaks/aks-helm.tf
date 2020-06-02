@@ -9,10 +9,6 @@ provider "helm" {
     cluster_ca_certificate = base64decode(azurerm_kubernetes_cluster.k8s.kube_config.0.cluster_ca_certificate)
   }
 }
-data "helm_repository" "stable" {
-  name = "stable"
-  url  = "https://kubernetes-charts.storage.googleapis.com"
-}
 
 # Install nginx ingress controller
 resource "kubernetes_namespace" "nginx_ingress" {
@@ -23,13 +19,17 @@ resource "kubernetes_namespace" "nginx_ingress" {
 }
 resource "helm_release" "nginx_ingress" {
   name       = "nginx-ingress"
-  repository = data.helm_repository.stable.metadata[0].name
+  repository = "https://kubernetes-charts.storage.googleapis.com"
   chart      = "stable/nginx-ingress"
   timeout    = 2400
   namespace  = kubernetes_namespace.nginx_ingress.metadata.0.name
   set {
     name  = "controller.replicaCount"
     value = "1"
+  }
+  set {
+    name  = "service.beta.kubernetes.io/azure-dns-label-name"
+    value = var.cluster_name
   }
   depends_on = [kubernetes_namespace.nginx_ingress]
 }
@@ -39,11 +39,11 @@ resource "kubernetes_namespace" "nginx_ingress_internal" {
   metadata {
     name = "ingress-basic-internal"
   }
-  depends_on = [azurerm_kubernetes_cluster.k8s,azurerm_role_assignment.k8s-rbac-network]
+  depends_on = [azurerm_kubernetes_cluster.k8s, azurerm_role_assignment.k8s-rbac-network]
 }
 resource "helm_release" "nginx_ingress_internal" {
   name       = "nginx-ingress-internal"
-  repository = data.helm_repository.stable.metadata[0].name
+  repository = "https://kubernetes-charts.storage.googleapis.com"
   chart      = "stable/nginx-ingress"
   timeout    = 2400
   namespace  = kubernetes_namespace.nginx_ingress_internal.metadata.0.name
