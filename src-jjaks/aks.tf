@@ -64,14 +64,21 @@ resource "azurerm_kubernetes_cluster_node_pool" "k8s-npwin" {
   depends_on = [azurerm_kubernetes_cluster.k8s]
 }
 
+# permission to join K8s to virtual network
 resource "azurerm_role_assignment" "k8s-rbac-network" {
   scope                = data.azurerm_resource_group.rg-network.id
   role_definition_name = "Network Contributor"
   principal_id         = azurerm_kubernetes_cluster.k8s.identity[0].principal_id
 }
 
+# permission to access ACR
 resource "azurerm_role_assignment" "k8s-rbac-acr" {
   scope                = data.azurerm_container_registry.acr.id
   role_definition_name = "AcrPull"
   principal_id         = azurerm_kubernetes_cluster.k8s.identity[0].principal_id
+}
+resource "azurerm_role_assignment" "k8s-kubelet-rbac-acr" {
+  scope                = data.azurerm_container_registry.acr.id
+  role_definition_name = "AcrPull"
+  principal_id         = azurerm_kubernetes_cluster.k8s.kubelet_identity[0].object_id
 }
