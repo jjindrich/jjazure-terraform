@@ -4,12 +4,12 @@ resource "azurerm_resource_group" "rgsql" {
 }
 
 resource "azurerm_postgresql_server" "sql" {
-  name                = "jjsqlsql"
+  name                = "jjsql12345"
   location            = azurerm_resource_group.rgsql.location
   resource_group_name = azurerm_resource_group.rgsql.name
 
-  #sku_name = "B_Gen5_2"
-  sku_name = "GP_Gen5_2"
+  sku_name = "B_Gen5_2"
+  #sku_name = "GP_Gen5_2"
 
   storage_mb                   = 5120
   backup_retention_days        = 7

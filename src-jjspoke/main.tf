@@ -52,6 +52,7 @@ resource "azurerm_subnet" "vnet_sub1" {
   resource_group_name  = azurerm_resource_group.rg.name
   virtual_network_name = azurerm_virtual_network.vnet.name
   address_prefixes     = var.network_sub1_address
+  service_endpoints    = ["Microsoft.Storage"]
 }
 
 resource "azurerm_virtual_network_peering" "hub-to-spoke" {
