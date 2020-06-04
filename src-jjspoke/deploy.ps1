@@ -18,6 +18,6 @@ $subscription_spoke="c96358c2-e8a3-43ed-89c6-add1aaa99441"
 
 Write-Output "Running Terraform deployment"
 terraform init
-terraform plan -var "subscriptionid_hub=$subscription" -var "subscriptionid_spoke=$subscription_spoke"
+#terraform plan -var "subscriptionid_hub=$subscription" -var "subscriptionid_spoke=$subscription_spoke"
 
 terraform apply -var "subscriptionid_hub=$subscription" -var "subscriptionid_spoke=$subscription_spoke" -auto-approve

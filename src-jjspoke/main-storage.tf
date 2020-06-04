@@ -17,12 +17,14 @@ resource "azurerm_storage_account" "st1" {
   
   network_rules {
     default_action             = "Deny"
-    bypass                     = ["AzureServices"]
-    #ip_rules                   = []
-    virtual_network_subnet_ids = [azurerm_subnet.vnet_sub1.id]
+    bypass                     = ["AzureServices"]    
+    ip_rules                   = ["95.85.255.10"]
+    virtual_network_subnet_ids = [azurerm_subnet.vnet_sub1.id]    
   }
 }
 
+// bug 
+// https://github.com/terraform-providers/terraform-provider-azurerm/issues/2977
 resource "azurerm_storage_container" "container_address_autocomplete" {
   name                  = "addressautocomplete"
   storage_account_name  = azurerm_storage_account.st1.name
