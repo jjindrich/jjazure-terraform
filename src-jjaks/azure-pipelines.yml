@@ -25,7 +25,10 @@ stages:
       displayName: 'Install Terraform'
       inputs:
         terraformVersion: 0.12.25
-      
+    
+    - script: ls
+
+
     - task: TerraformTaskV1@0
       displayName: 'Terraform : azurerm init'
       inputs:
