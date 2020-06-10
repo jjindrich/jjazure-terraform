@@ -25,13 +25,10 @@ stages:
       displayName: 'Install Terraform 0.12.21'
       inputs:
         terraformVersion: 0.12.21
-
-    - checkout: self
-      clean: true
-      persistCredentials: true
       
     - task: ms-devlabs.custom-terraform-tasks.custom-terraform-release-task.TerraformTaskV1@0
       displayName: 'Terraform : azurerm init'
+      persistCredentials: true
       inputs:
         workingDirectory: $(pipeline.workspace)/jjazure-terraform/src-jjaks
         commandOptions: '-no-color'
