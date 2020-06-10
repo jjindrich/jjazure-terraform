@@ -13,6 +13,10 @@ pool:
 
 variables:
   subscription: 'JJ Microsoft Azure Internal Consumption (82fb79bf-ee69-4a57-a76c-26153e544afe)'
+  tfResourceGroupName: 'jjdevmanagement'
+  tfStorageAccountName: 'jjtfstate'
+  tfStorageContainerName: 'jjaks'
+  tfKey: 'terraform.tfstate'
 
 stages:
 - stage: 'Prepare'
@@ -27,16 +31,16 @@ stages:
         terraformVersion: 0.12.25
 
     - task: TerraformTaskV1@0
-      displayName: 'Terraform : azurerm init'
+      displayName: 'Terraform : Terraform init'
       inputs:
         workingDirectory: src-jjaks
         provider: 'azurerm'
         command: 'init'
         backendServiceArm: $(subscription)
-        backendAzureRmResourceGroupName: 'jjdevmanagement'
-        backendAzureRmStorageAccountName: 'jjtfstate'
-        backendAzureRmContainerName: 'jjaks'
-        backendAzureRmKey: 'terraform.tfstate'
+        backendAzureRmResourceGroupName: $(tfResourceGroupName)
+        backendAzureRmStorageAccountName: $(tfStorageAccountName)
+        backendAzureRmContainerName: $(tfStorageContainerName)
+        backendAzureRmKey: $(tfKey)
 
     - task: TerraformTaskV1@0
       displayName: 'Terraform : azurerm plan'
@@ -47,23 +51,26 @@ stages:
         commandOptions: '-no-color'
         backendServiceArm: $(subscription)
         environmentServiceNameAzureRM: $(subscription)
-        backendAzureRmResourceGroupName: 'jjdevmanagement'
-        backendAzureRmStorageAccountName: 'jjtfstate'
-        backendAzureRmContainerName: 'jjaks'
-        backendAzureRmKey: 'terraform.tfstate'
+        backendAzureRmResourceGroupName: $(tfResourceGroupName)
+        backendAzureRmStorageAccountName: $(tfStorageAccountName)
+        backendAzureRmContainerName: $(tfStorageContainerName)
+        backendAzureRmKey: $(tfKey)
 
-    # - task: TerraformInstaller@0
-    #   inputs:
-    #     terraformVersion: '0.12.3'
-    # - script: |
-    #     terraform -version
-    #     terraform init
-    #     terraform plan
-    #   workingDirectory: $(pipeline.workspace)/jjazure-terraform/src-jjaks
-    #   failOnStderr: true
-    #   displayName: 'Terraform plan'
-    #   env:
-    #     ARM_TENANT_ID: $(tenantId)
-    #     ARM_SUBSCRIPTION_ID: $(subscriptionId)
-    #     ARM_CLIENT_ID: $(clientId)
-    #     ARM_CLIENT_SECRET: $(clientSecret)
+    - task: TerraformTaskV1@0
+      displayName: 'Terraform : azurerm apply'
+      inputs:
+        workingDirectory: src-jjaks
+        provider: 'azurerm'
+        command: apply
+        commandOptions: '-no-color'
+        backendServiceArm: $(subscription)
+        environmentServiceNameAzureRM: $(subscription)
+        backendAzureRmResourceGroupName: $(tfResourceGroupName)
+        backendAzureRmStorageAccountName: $(tfStorageAccountName)
+        backendAzureRmContainerName: $(tfStorageContainerName)
+        backendAzureRmKey: $(tfKey)
+
+    - bash: terraform output kube_config_raw
+      workingDirectory: src-jjaks
+      displayName: 'Terraform OUTPUT'
+
