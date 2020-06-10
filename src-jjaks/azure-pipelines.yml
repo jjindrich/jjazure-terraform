@@ -21,22 +21,22 @@ stages:
   - job: 'Prepare'
     displayName: 'Prepare'
     steps:
-    - task: ms-devlabs.custom-terraform-tasks.custom-terraform-installer-task.TerraformInstaller@0
+    - task: TerraformInstaller@0
       displayName: 'Install Terraform 0.12.21'
       inputs:
         terraformVersion: 0.12.21
       
-    - task: ms-devlabs.custom-terraform-tasks.custom-terraform-release-task.TerraformTaskV1@0
+    - task: TerraformTaskV1@0
       displayName: 'Terraform : azurerm init'
-      persistCredentials: true
       inputs:
-        workingDirectory: $(pipeline.workspace)/jjazure-terraform/src-jjaks
-        commandOptions: '-no-color'
-        backendServiceArm: $(subscription)
-        backendAzureRmResourceGroupName: jjdevmanagement
-        backendAzureRmStorageAccountName: jjtfstate
-        backendAzureRmContainerName: jjaks
-        backendAzureRmKey: terraform.tfstate
+        workingDirectory: '$(pipeline.workspace)/jjazure-terraform/src-jjaks'
+        provider: 'azurerm'
+        command: 'init'
+        backendServiceArm: 'JJ Microsoft Azure Internal Consumption (82fb79bf-ee69-4a57-a76c-26153e544afe)'
+        backendAzureRmResourceGroupName: 'jjdevmanagement'
+        backendAzureRmStorageAccountName: 'jjtfstate'
+        backendAzureRmContainerName: 'jjaks'
+        backendAzureRmKey: 'terraform.tfstate'
 
     # - task: TerraformInstaller@0
     #   inputs:
