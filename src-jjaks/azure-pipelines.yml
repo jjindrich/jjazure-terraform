@@ -1,0 +1,43 @@
+name: $(date:yyyyMMdd)$(rev:.r)
+
+trigger:
+  branches:
+    include:
+    - '*'
+  paths:
+    include:
+    -  src-jjaks/*
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  subscription: 'JJ Microsoft Azure Internal Consumption (82fb79bf-ee69-4a57-a76c-26153e544afe)'
+
+stages:
+- stage: 'Prepare'
+  displayName: 'Prepare'
+  jobs:
+  - job: 'Prepare'
+    displayName: 'Prepare'
+    steps:
+    - task: ms-devlabs.custom-terraform-tasks.custom-terraform-installer-task.TerraformInstaller@0
+      displayName: 'Install Terraform 0.12.21'
+      inputs:
+        terraformVersion: 0.12.21
+
+    # - task: TerraformInstaller@0
+    #   inputs:
+    #     terraformVersion: '0.12.3'
+    # - script: |
+    #     terraform -version
+    #     terraform init
+    #     terraform plan
+    #   workingDirectory: $(pipeline.workspace)/jjazure-terraform/src-jjaks
+    #   failOnStderr: true
+    #   displayName: 'Terraform plan'
+    #   env:
+    #     ARM_TENANT_ID: $(tenantId)
+    #     ARM_SUBSCRIPTION_ID: $(subscriptionId)
+    #     ARM_CLIENT_ID: $(clientId)
+    #     ARM_CLIENT_SECRET: $(clientSecret)
