@@ -22,9 +22,9 @@ stages:
     displayName: 'Prepare'
     steps:
     - task: TerraformInstaller@0
-      displayName: 'Install Terraform 0.12.21'
+      displayName: 'Install Terraform'
       inputs:
-        terraformVersion: 0.12.21
+        terraformVersion: 0.12.26
       
     - task: TerraformTaskV1@0
       displayName: 'Terraform : azurerm init'
