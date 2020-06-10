@@ -29,6 +29,12 @@ stages:
       displayName: 'Install Terraform'
       inputs:
         terraformVersion: 0.12.25
+- stage: 'Plan and Deploy'
+  displayName: 'Deploy'
+  jobs:
+  - job: 'Apply'
+    displayName: 'Apply'
+    steps:
     - task: TerraformTaskV1@0
       displayName: 'Terraform : Terraform init'
       inputs:
@@ -53,13 +59,6 @@ stages:
         backendAzureRmStorageAccountName: $(tfStorageAccountName)
         backendAzureRmContainerName: $(tfStorageContainerName)
         backendAzureRmKey: $(tfKey)
-
-- stage: 'Deploy'
-  displayName: 'Deploy'
-  jobs:
-  - job: 'Apply'
-    displayName: 'Apply'
-    steps:
     - task: TerraformTaskV1@0
       displayName: 'Terraform : azurerm apply'
       inputs:
