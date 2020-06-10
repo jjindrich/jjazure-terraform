@@ -37,11 +37,6 @@ stages:
         backendAzureRmStorageAccountName: 'jjtfstate'
         backendAzureRmContainerName: 'jjaks'
         backendAzureRmKey: 'terraform.tfstate'
-      env:
-        ARM_TENANT_ID: $(tenantId)
-        ARM_SUBSCRIPTION_ID: $(subscriptionId)
-        ARM_CLIENT_ID: $(clientId)
-        ARM_CLIENT_SECRET: $(clientSecret)
 
     # - task: TerraformInstaller@0
     #   inputs:
