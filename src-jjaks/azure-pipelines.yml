@@ -25,9 +25,6 @@ stages:
       displayName: 'Install Terraform'
       inputs:
         terraformVersion: 0.12.25
-    
-    - script: ls
-
 
     - task: TerraformTaskV1@0
       displayName: 'Terraform : azurerm init'
@@ -35,7 +32,20 @@ stages:
         workingDirectory: src-jjaks
         provider: 'azurerm'
         command: 'init'
-        backendServiceArm: 'JJ Microsoft Azure Internal Consumption (82fb79bf-ee69-4a57-a76c-26153e544afe)'
+        backendServiceArm: $(subscription)
+        backendAzureRmResourceGroupName: 'jjdevmanagement'
+        backendAzureRmStorageAccountName: 'jjtfstate'
+        backendAzureRmContainerName: 'jjaks'
+        backendAzureRmKey: 'terraform.tfstate'
+
+    - task: TerraformTaskV1@0
+      displayName: 'Terraform : azurerm plan'
+      inputs:
+        workingDirectory: src-jjaks
+        provider: 'azurerm'
+        command: plan
+        commandOptions: '-no-color'
+        backendServiceArm: $(subscription)
         backendAzureRmResourceGroupName: 'jjdevmanagement'
         backendAzureRmStorageAccountName: 'jjtfstate'
         backendAzureRmContainerName: 'jjaks'
