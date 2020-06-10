@@ -22,8 +22,8 @@ stages:
 - stage: 'PlanDeploy'
   displayName: 'Plan and Deploy'
   jobs:
-  - job: 'Init'
-    displayName: 'Init'
+  - job: 'PlanDeploy'
+    displayName: 'Plan and Deploy'
     steps:
     - task: TerraformInstaller@0
       displayName: 'Install Terraform'
@@ -40,9 +40,6 @@ stages:
         backendAzureRmStorageAccountName: $(tfStorageAccountName)
         backendAzureRmContainerName: $(tfStorageContainerName)
         backendAzureRmKey: $(tfKey)
-  - job: 'Plan'
-    displayName: 'Plan'
-    steps:
     - task: TerraformTaskV1@0
       displayName: 'Terraform : azurerm plan'
       inputs:
@@ -56,9 +53,6 @@ stages:
         backendAzureRmStorageAccountName: $(tfStorageAccountName)
         backendAzureRmContainerName: $(tfStorageContainerName)
         backendAzureRmKey: $(tfKey)
-  - job: 'Apply'
-    displayName: 'Apply'
-    steps:
     - task: TerraformTaskV1@0
       displayName: 'Terraform : azurerm apply'
       inputs:
