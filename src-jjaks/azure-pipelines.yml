@@ -19,22 +19,16 @@ variables:
   tfKey: 'terraform.tfstate'
 
 stages:
-- stage: 'Prepare'
-  displayName: 'Prepare'
-  jobs:
-  - job: 'Prepare'
-    displayName: 'Prepare'
-    steps:
-    - task: TerraformInstaller@0
-      displayName: 'Install Terraform'
-      inputs:
-        terraformVersion: 0.12.25
 - stage: 'PlanDeploy'
   displayName: 'Plan and Deploy'
   jobs:
   - job: 'Init'
     displayName: 'Init'
     steps:
+    - task: TerraformInstaller@0
+      displayName: 'Install Terraform'
+      inputs:
+        terraformVersion: 0.12.25
     - task: TerraformTaskV1@0
       displayName: 'Terraform : Terraform init'
       inputs:
