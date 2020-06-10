@@ -29,8 +29,8 @@ stages:
       displayName: 'Install Terraform'
       inputs:
         terraformVersion: 0.12.25
-- stage: 'Plan and Deploy'
-  displayName: 'Deploy'
+- stage: 'PlanDeploy'
+  displayName: 'Plan and Deploy'
   jobs:
   - job: 'Apply'
     displayName: 'Apply'
