@@ -32,7 +32,7 @@ stages:
     - task: TerraformTaskV1@0
       displayName: 'Terraform : azurerm init'
       inputs:
-        workingDirectory: '$(pipeline.workspace)/jjazure-terraform/src-jjaks'
+        workingDirectory: src-jjaks
         provider: 'azurerm'
         command: 'init'
         backendServiceArm: 'JJ Microsoft Azure Internal Consumption (82fb79bf-ee69-4a57-a76c-26153e544afe)'
