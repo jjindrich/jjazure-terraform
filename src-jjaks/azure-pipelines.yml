@@ -46,6 +46,7 @@ stages:
         command: plan
         commandOptions: '-no-color'
         backendServiceArm: $(subscription)
+        environmentServiceNameAzureRM: $(subscription)
         backendAzureRmResourceGroupName: 'jjdevmanagement'
         backendAzureRmStorageAccountName: 'jjtfstate'
         backendAzureRmContainerName: 'jjaks'
