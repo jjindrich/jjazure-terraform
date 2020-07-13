@@ -1,0 +1,73 @@
+name: $(date:yyyyMMdd)$(rev:.r)
+
+trigger:
+  branches:
+    include:
+    - '*'
+  paths:
+    include:
+    -  src-jjaks/*
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  subscription: 'JJ Microsoft Azure Internal Consumption (82fb79bf-ee69-4a57-a76c-26153e544afe)'
+  tfResourceGroupName: 'jjdevmanagement'
+  tfStorageAccountName: 'jjtfstate'
+  tfStorageContainerName: 'jjaks'
+  tfKey: 'terraform.tfstate'
+
+stages:
+- stage: 'PlanDeploy'
+  displayName: 'Plan and Deploy'
+  jobs:
+  - job: 'PlanDeploy'
+    displayName: 'Plan and Deploy'
+    steps:
+    - task: TerraformInstaller@0
+      displayName: 'Install Terraform'
+      inputs:
+        terraformVersion: 0.12.25
+    - task: TerraformTaskV1@0
+      displayName: 'Terraform : Terraform init'
+      inputs:
+        workingDirectory: src-jjaks
+        provider: 'azurerm'
+        command: 'init'
+        backendServiceArm: $(subscription)
+        backendAzureRmResourceGroupName: $(tfResourceGroupName)
+        backendAzureRmStorageAccountName: $(tfStorageAccountName)
+        backendAzureRmContainerName: $(tfStorageContainerName)
+        backendAzureRmKey: $(tfKey)
+    - task: TerraformTaskV1@0
+      displayName: 'Terraform : azurerm plan'
+      inputs:
+        workingDirectory: src-jjaks
+        provider: 'azurerm'
+        command: plan
+        commandOptions: '-no-color'
+        backendServiceArm: $(subscription)
+        environmentServiceNameAzureRM: $(subscription)
+        backendAzureRmResourceGroupName: $(tfResourceGroupName)
+        backendAzureRmStorageAccountName: $(tfStorageAccountName)
+        backendAzureRmContainerName: $(tfStorageContainerName)
+        backendAzureRmKey: $(tfKey)
+    - task: TerraformTaskV1@0
+      displayName: 'Terraform : azurerm apply'
+      inputs:
+        workingDirectory: src-jjaks
+        provider: 'azurerm'
+        command: apply
+        commandOptions: '-no-color'
+        backendServiceArm: $(subscription)
+        environmentServiceNameAzureRM: $(subscription)
+        backendAzureRmResourceGroupName: $(tfResourceGroupName)
+        backendAzureRmStorageAccountName: $(tfStorageAccountName)
+        backendAzureRmContainerName: $(tfStorageContainerName)
+        backendAzureRmKey: $(tfKey)
+
+    - bash: terraform output kube_config_raw
+      workingDirectory: src-jjaks
+      displayName: 'Terraform OUTPUT'
+
