@@ -44,6 +44,7 @@ resource "kubernetes_cluster_role_binding" "default-aad" {
 }
 
 # Grant cluster-admin rights to the kubernetes-dashboard account
+/*
 resource "kubernetes_cluster_role_binding" "dashboard" {
   metadata {
     name = "kubernetes-dashboard"
@@ -59,3 +60,4 @@ resource "kubernetes_cluster_role_binding" "dashboard" {
     namespace = "kube-system"
   }
 }
+*/
