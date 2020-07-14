@@ -3,6 +3,11 @@ output "kube_config_raw" {
   sensitive   = true
 }
 
+output "kube_fqdn" {
+  value = azurerm_kubernetes_cluster.k8s.fqdn
+  sensitive   = false
+}
+
 output "config" {
   value = <<CONFIGURE
 

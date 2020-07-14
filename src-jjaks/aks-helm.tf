@@ -10,27 +10,6 @@ provider "helm" {
   }
 }
 
-# Configure DNS
-/*
-resource "kubernetes_config_map" "dns_custom"{
-  metadata {
-    name = "coredns-custom"
-    namespace = "kube-system"
-  }
-
-  data = { 
-  "test.server" = <<EOF
-    jjdev.local:53 {
-        forward jjdevv2addc.jjdev.local 10.3.250.10
-    }
-    jjdev.lan:53 {
-        forward jjdevv2addc.jjdev.lan 10.3.250.10
-    }
-    EOF
-  }
-}
-*/
-
 # Install nginx ingress controller
 resource "kubernetes_namespace" "nginx_ingress" {
   metadata {
@@ -51,6 +30,14 @@ resource "helm_release" "nginx_ingress" {
   set {
     name  = "controller.service.annotations.service\\.beta\\.kubernetes\\.io/azure-dns-label-name"
     value = var.cluster_name
+  }
+  set {
+    name = "controller.extraEnvs[0].name"
+    value = "KUBERNETES_SERVICE_HOST"
+  }
+  set {
+    name = "controller.extraEnvs[0].value"
+    value = azurerm_kubernetes_cluster.k8s.fqdn
   }
   depends_on = [kubernetes_namespace.nginx_ingress]
 }
@@ -77,6 +64,9 @@ controller:
     annotations:
       service.beta.kubernetes.io/azure-load-balancer-internal: "true"
       kubernetes.io/ingress.class: nginx-internal
+  extraEnvs:
+  - name: KUBERNETES_SERVICE_HOST
+    value: ${azurerm_kubernetes_cluster.k8s.fqdn}
 EOF
   ]
   depends_on = [kubernetes_namespace.nginx_ingress_internal]

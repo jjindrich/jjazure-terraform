@@ -8,7 +8,6 @@ resource "azurerm_kubernetes_cluster" "k8s" {
 
   default_node_pool {
     name                = "agentpool"
-    node_count          = 1
     min_count           = 1
     max_count           = 3
     vm_size             = "Standard_B2s"
@@ -50,7 +49,6 @@ resource "azurerm_kubernetes_cluster" "k8s" {
 resource "azurerm_kubernetes_cluster_node_pool" "k8s-npwin" {
   name                  = "npwin"
   kubernetes_cluster_id = azurerm_kubernetes_cluster.k8s.id
-  node_count            = 1
   vm_size               = "Standard_B2ms"
   availability_zones    = [1, 2, 3]
   os_type               = "Windows"
