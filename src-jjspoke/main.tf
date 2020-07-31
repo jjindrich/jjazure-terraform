@@ -6,7 +6,7 @@ terraform {
     key                  = "terraform.tfstate"
   }
   required_providers {
-    azurerm    = "~> 2.1"
+    azurerm = "~> 2.1"
   }
 }
 
@@ -35,7 +35,7 @@ data "azurerm_virtual_network" "hubvnet" {
 # create resource group
 resource "azurerm_resource_group" "rg" {
   name     = var.resource_group_name
-  location = local.location  
+  location = local.location
 }
 
 # spoke network
@@ -72,4 +72,21 @@ resource "azurerm_virtual_network_peering" "spoke-to-hub" {
   remote_virtual_network_id    = data.azurerm_virtual_network.hubvnet.id
   allow_virtual_network_access = true
   allow_forwarded_traffic      = true
+}
+
+# Keyvault reference
+data "azurerm_key_vault" "jjkeyvault" {
+  name                = var.keyvault_name
+  resource_group_name = var.keyvault_rg
+  provider            = azurerm.hub
+}
+data "azurerm_key_vault_secret" "password" {
+  name         = "password"
+  key_vault_id = data.azurerm_key_vault.jjkeyvault.id
+  provider     = azurerm.hub
+}
+data "azurerm_key_vault_secret" "ad-password" {
+  name         = "ad-password"
+  key_vault_id = data.azurerm_key_vault.jjkeyvault.id
+  provider     = azurerm.hub
 }

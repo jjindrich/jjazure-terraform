@@ -4,3 +4,5 @@ network_address_space = ["10.5.0.0/16"]
 network_dns = ["10.3.250.10"]
 network_sub1_name = "DmzJump"
 network_sub1_address = ["10.5.0.0/24"]
+keyvault_name = "jjkeyvault"
+keyvault_rg = "jjdevmanagement"

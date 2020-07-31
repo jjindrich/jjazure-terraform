@@ -7,3 +7,6 @@ variable network_address_space {}
 variable network_dns {}
 variable network_sub1_name {}
 variable network_sub1_address {}
+
+variable "keyvault_name" {}
+variable "keyvault_rg" {}
