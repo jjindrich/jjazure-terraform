@@ -21,3 +21,5 @@ terraform init
 #terraform plan -var "subscriptionid_hub=$subscription" -var "subscriptionid_spoke=$subscription_spoke"
 
 terraform apply -var "subscriptionid_hub=$subscription" -var "subscriptionid_spoke=$subscription_spoke" -auto-approve
+
+#terraform destroy -var "subscriptionid_hub=$subscription" -var "subscriptionid_spoke=$subscription_spoke"
