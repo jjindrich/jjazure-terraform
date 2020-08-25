@@ -8,5 +8,5 @@ variable network_dns {}
 variable network_sub1_name {}
 variable network_sub1_address {}
 
-variable "keyvault_name" {}
-variable "keyvault_rg" {}
+variable keyvault_name {}
+variable keyvault_rg {}

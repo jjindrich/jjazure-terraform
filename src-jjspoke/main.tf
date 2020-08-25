@@ -33,7 +33,7 @@ data "azurerm_virtual_network" "hubvnet" {
 }
 
 # create resource group
-resource "azurerm_resource_group" "rg" {
+resource "azurerm_resource_group" "rg-network" {
   name     = var.resource_group_name
   location = local.location
 }
@@ -41,7 +41,7 @@ resource "azurerm_resource_group" "rg" {
 # spoke network
 resource "azurerm_virtual_network" "vnet" {
   name                = var.network_name
-  resource_group_name = azurerm_resource_group.rg.name
+  resource_group_name = azurerm_resource_group.rg-network.name
   location            = local.location
   address_space       = var.network_address_space
   dns_servers         = var.network_dns
@@ -49,7 +49,7 @@ resource "azurerm_virtual_network" "vnet" {
 
 resource "azurerm_subnet" "vnet_sub1" {
   name                 = var.network_sub1_name
-  resource_group_name  = azurerm_resource_group.rg.name
+  resource_group_name  = azurerm_resource_group.rg-network.name
   virtual_network_name = azurerm_virtual_network.vnet.name
   address_prefixes     = var.network_sub1_address
   service_endpoints    = ["Microsoft.Storage"]
@@ -67,7 +67,7 @@ resource "azurerm_virtual_network_peering" "hub-to-spoke" {
 
 resource "azurerm_virtual_network_peering" "spoke-to-hub" {
   name                         = "${azurerm_virtual_network.vnet.name}-to-${data.azurerm_virtual_network.hubvnet.name}"
-  resource_group_name          = azurerm_resource_group.rg.name
+  resource_group_name          = azurerm_resource_group.rg-network.name
   virtual_network_name         = azurerm_virtual_network.vnet.name
   remote_virtual_network_id    = data.azurerm_virtual_network.hubvnet.id
   allow_virtual_network_access = true

@@ -1,3 +1,4 @@
+/*
 resource "azurerm_resource_group" "rg-vmappwin" {
   name     = "${local.vmappwin.name}-rg"
   location = local.location
@@ -78,3 +79,4 @@ resource "azurerm_virtual_machine_extension" "script-ext" {
     }
 SETTINGS
 }
+*/

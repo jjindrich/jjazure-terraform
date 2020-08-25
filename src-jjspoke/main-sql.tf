@@ -1,3 +1,4 @@
+/*
 resource "azurerm_resource_group" "rgsql" {
   name     = "sql-rg"
   location = local.location
@@ -29,3 +30,4 @@ resource "azurerm_postgresql_database" "db1" {
   charset             = "UTF8"
   collation           = "English_United States.1252"
 }
+*/

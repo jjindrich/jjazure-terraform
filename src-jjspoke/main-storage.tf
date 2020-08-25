@@ -1,4 +1,4 @@
-resource "azurerm_resource_group" "rgstorage" {
+/*resource "azurerm_resource_group" "rgstorage" {
   name     = "storage-rg"
   location = local.location
 }
@@ -30,3 +30,4 @@ resource "azurerm_storage_container" "container_address_autocomplete" {
   storage_account_name  = azurerm_storage_account.st1.name
   container_access_type = "blob"
 }
+*/
