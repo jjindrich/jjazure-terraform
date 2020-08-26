@@ -23,15 +23,22 @@ resource "azurerm_kubernetes_cluster" "k8s" {
 
   role_based_access_control {
     enabled = true
+    azure_active_directory {
+      admin_group_object_ids = [
+        var.aad_aks_admin_role
+        ]
+      managed = true
+    }
   }
 
   identity {
     type = "SystemAssigned"
   }
 
+
   addon_profile {
     kube_dashboard {
-      enabled = true
+      enabled = false
     }
     oms_agent {
       enabled                    = true

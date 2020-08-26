@@ -20,3 +20,5 @@ terraform import azurerm_resource_group.k8s /subscriptions/$subscription/resourc
 #terraform plan
 
 terraform apply -auto-approve
+
+#terraform destroy -auto-approve

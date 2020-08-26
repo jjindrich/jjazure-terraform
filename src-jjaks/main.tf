@@ -6,14 +6,14 @@ terraform {
     key                  = "terraform.tfstate"
   }
   required_providers {
-    azurerm    = "~> 2.1"
-    helm       = "~> 1.0"
-    kubernetes = "~> 1.11"
+    azurerm    = "~> 2.24"
+    helm       = "~> 1.2"
+    kubernetes = "~> 1.12"
   }
 }
 
 provider "azurerm" {
-  version = "~> 2.1"
+  version = "~> 2.24"
   features {}
 }
 
