@@ -44,6 +44,9 @@ resource "azurerm_kubernetes_cluster" "k8s" {
       enabled                    = true
       log_analytics_workspace_id = data.azurerm_log_analytics_workspace.jjanalytics.id
     }
+    azure_policy {
+      enabled = true      
+    }
   }
 
   network_profile {
