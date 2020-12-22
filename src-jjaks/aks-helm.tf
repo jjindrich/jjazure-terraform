@@ -1,6 +1,6 @@
 # Load Provider Helm and helm stable repository
 provider "helm" {
-  version = "~> 1.2"
+  version = "~> 2.0"
   kubernetes {
     load_config_file       = false
     host                   = azurerm_kubernetes_cluster.k8s.kube_admin_config.0.host
@@ -27,25 +27,25 @@ resource "kubernetes_namespace" "nginx_ingress" {
   depends_on = [azurerm_kubernetes_cluster.k8s]
 }
 resource "helm_release" "nginx_ingress" {
-  name       = "nginx-ingress"
-  repository = "https://kubernetes-charts.storage.googleapis.com"
-  chart      = "nginx-ingress"
+  name       = "nginx-ingress-controller"
+  repository = "https://charts.bitnami.com/bitnami"
+  chart      = "nginx-ingress-controller"
   timeout    = 2400
   namespace  = kubernetes_namespace.nginx_ingress.metadata.0.name
   set {
-    name  = "controller.replicaCount"
+    name  = "replicaCount"
     value = "1"
   }
   set {
-    name  = "controller.service.annotations.service\\.beta\\.kubernetes\\.io/azure-dns-label-name"
+    name  = "service.annotations.service\\.beta\\.kubernetes\\.io/azure-dns-label-name"
     value = var.cluster_name
   }
   set {
-    name = "controller.extraEnvs[0].name"
+    name = "extraEnvs[0].name"
     value = "KUBERNETES_SERVICE_HOST"
   }
   set {
-    name = "controller.extraEnvs[0].value"
+    name = "extraEnvs[0].value"
     value = azurerm_kubernetes_cluster.k8s.fqdn
   }
   depends_on = [kubernetes_namespace.nginx_ingress]
@@ -59,23 +59,22 @@ resource "kubernetes_namespace" "nginx_ingress_internal" {
   depends_on = [azurerm_kubernetes_cluster.k8s, azurerm_role_assignment.k8s-rbac-network]
 }
 resource "helm_release" "nginx_ingress_internal" {
-  name       = "nginx-ingress-internal"
-  repository = "https://kubernetes-charts.storage.googleapis.com"
-  chart      = "nginx-ingress"
+  name       = "nginx-ingress-internal-controller"
+  repository = "https://charts.bitnami.com/bitnami"
+  chart      = "nginx-ingress-controller"
   timeout    = 2400
   namespace  = kubernetes_namespace.nginx_ingress_internal.metadata.0.name
   values = [<<EOF
-controller:
-  ingressClass: nginx-internal
-  replicaCount: 1
-  service:
-    loadBalancerIP: ${var.ingress_load_balancer_ip}
-    annotations:
-      service.beta.kubernetes.io/azure-load-balancer-internal: "true"
-      kubernetes.io/ingress.class: nginx-internal
-  extraEnvs:
-  - name: KUBERNETES_SERVICE_HOST
-    value: ${azurerm_kubernetes_cluster.k8s.fqdn}
+ingressClass: nginx-internal
+replicaCount: 1
+service:
+  loadBalancerIP: ${var.ingress_load_balancer_ip}
+  annotations:
+    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+    kubernetes.io/ingress.class: nginx-internal
+extraEnvs:
+- name: KUBERNETES_SERVICE_HOST
+  value: ${azurerm_kubernetes_cluster.k8s.fqdn}
 EOF
   ]
   depends_on = [kubernetes_namespace.nginx_ingress_internal]
