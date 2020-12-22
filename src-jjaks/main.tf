@@ -7,7 +7,7 @@ terraform {
   }
   required_providers {
     azurerm    = "~> 2.24"
-    helm       = "~> 1.2"
+    helm       = "~> 2.0"
     kubernetes = "~> 1.12"
   }
 }
