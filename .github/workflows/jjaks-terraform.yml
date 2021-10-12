@@ -2,14 +2,14 @@ name: 'jjaks-terraform'
 
 on:  
   workflow_dispatch:  
-#  push:
-#    branches:
-#    - master
-#    paths:
-#    - src-jjaks/**  
-#  pull_request:
-#    branches:
-#    - main
+  push:
+    branches:
+    - master
+    paths:
+    - src-jjaks/**  
+  pull_request:
+    branches:
+    - main
     
 jobs:
   terraform:
@@ -36,6 +36,8 @@ jobs:
     # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v1
+      with:
+        terraform_version: 0.12.29
 
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
