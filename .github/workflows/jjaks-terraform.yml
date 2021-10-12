@@ -6,7 +6,7 @@ on:
     branches:
     - master
     paths:
-    - src-jjaks/**  
+    - 'src-jjaks/**'
   pull_request:
     branches:
     - main
