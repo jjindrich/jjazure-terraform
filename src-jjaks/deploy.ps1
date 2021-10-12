@@ -14,6 +14,9 @@ $Env:ARM_CLIENT_SECRET=$clientSecret
 
 # https://releases.hashicorp.com/terraform/0.12.23/terraform_0.12.23_windows_amd64.zip
 
+Write-Output "Check Terraform syntax"
+terraform fmt -check
+
 Write-Output "Running Terraform deployment"
 terraform init
 terraform import azurerm_resource_group.k8s /subscriptions/$subscription/resourceGroups/jjmicroservices-rg
