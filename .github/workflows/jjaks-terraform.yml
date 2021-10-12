@@ -5,6 +5,8 @@ on:
   push:
     branches:
     - master
+    paths:
+    - src-aks/**
   pull_request:
     branches:
     - main
@@ -24,6 +26,7 @@ jobs:
     defaults:
       run:
         shell: bash
+        working-directory: src-aks
 
     steps:
     # Checkout the repository to the GitHub Actions runner
