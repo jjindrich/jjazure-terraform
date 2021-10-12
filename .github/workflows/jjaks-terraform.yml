@@ -4,9 +4,7 @@ on:
   workflow_dispatch:  
   push:
     branches:
-    - master
-    paths:
-    - 'src-jjaks/**'
+    - master    
   pull_request:
     branches:
     - main
