@@ -44,6 +44,5 @@ jobs:
       run: terraform plan
 
     - name: Terraform Apply
-      # Only on push to master run TF apply OR when manual
       if: ${{ (github.ref == 'refs/heads/master' && github.event_name == 'push') || (github.event_name == 'workflow_dispatch') }}
       run: terraform apply -auto-approve
