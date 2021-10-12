@@ -40,11 +40,11 @@ resource "helm_release" "nginx_ingress" {
     value = var.cluster_name
   }
   set {
-    name = "extraEnvs[0].name"
+    name  = "extraEnvs[0].name"
     value = "KUBERNETES_SERVICE_HOST"
   }
   set {
-    name = "extraEnvs[0].value"
+    name  = "extraEnvs[0].value"
     value = azurerm_kubernetes_cluster.k8s.fqdn
   }
   depends_on = [kubernetes_namespace.nginx_ingress]

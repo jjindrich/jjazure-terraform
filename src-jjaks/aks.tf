@@ -26,7 +26,7 @@ resource "azurerm_kubernetes_cluster" "k8s" {
     azure_active_directory {
       admin_group_object_ids = [
         var.aad_aks_admin_role
-        ]
+      ]
       managed = true
     }
   }
@@ -45,7 +45,7 @@ resource "azurerm_kubernetes_cluster" "k8s" {
       log_analytics_workspace_id = data.azurerm_log_analytics_workspace.jjanalytics.id
     }
     azure_policy {
-      enabled = true      
+      enabled = true
     }
   }
 

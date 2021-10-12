@@ -1,11 +1,11 @@
 output "kube_config_raw" {
-  value = azurerm_kubernetes_cluster.k8s.kube_admin_config_raw
-  sensitive   = true
+  value     = azurerm_kubernetes_cluster.k8s.kube_admin_config_raw
+  sensitive = true
 }
 
 output "kube_fqdn" {
-  value = azurerm_kubernetes_cluster.k8s.fqdn
-  sensitive   = false
+  value     = azurerm_kubernetes_cluster.k8s.fqdn
+  sensitive = false
 }
 
 output "config" {
