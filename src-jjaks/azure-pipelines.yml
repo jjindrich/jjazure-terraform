@@ -1,12 +1,12 @@
 name: $(date:yyyyMMdd)$(rev:.r)
 
 trigger:
-  branches:
-    include:
-    - '*'
-  paths:
-    include:
-    -  src-jjaks/*
+  # branches:
+  #   include:
+  #   - '*'
+  # paths:
+  #   include:
+  #   -  src-jjaks/*
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -54,21 +54,21 @@ stages:
         backendAzureRmStorageAccountName: $(tfStorageAccountName)
         backendAzureRmContainerName: $(tfStorageContainerName)
         backendAzureRmKey: $(tfKey)
-    # - task: TerraformTaskV1@0
-    #   displayName: 'Terraform : azurerm apply'
-    #   inputs:
-    #     workingDirectory: src-jjaks
-    #     provider: 'azurerm'
-    #     command: apply
-    #     commandOptions: '-no-color'
-    #     backendServiceArm: $(subscription)
-    #     environmentServiceNameAzureRM: $(subscription)
-    #     backendAzureRmResourceGroupName: $(tfResourceGroupName)
-    #     backendAzureRmStorageAccountName: $(tfStorageAccountName)
-    #     backendAzureRmContainerName: $(tfStorageContainerName)
-    #     backendAzureRmKey: $(tfKey)
+    - task: TerraformTaskV2@2
+      displayName: 'Terraform : azurerm apply'
+      inputs:
+        workingDirectory: src-jjaks
+        provider: 'azurerm'
+        command: apply
+        commandOptions: '-no-color'
+        backendServiceArm: $(subscription)
+        environmentServiceNameAzureRM: $(subscription)
+        backendAzureRmResourceGroupName: $(tfResourceGroupName)
+        backendAzureRmStorageAccountName: $(tfStorageAccountName)
+        backendAzureRmContainerName: $(tfStorageContainerName)
+        backendAzureRmKey: $(tfKey)
 
-    # - bash: terraform output kube_config_raw
-    #   workingDirectory: src-jjaks
-    #   displayName: 'Terraform OUTPUT'
+    - bash: terraform output kube_config_raw
+      workingDirectory: src-jjaks
+      displayName: 'Terraform OUTPUT'
 
