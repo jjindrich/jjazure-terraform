@@ -41,20 +41,19 @@ stages:
         backendAzureRmStorageAccountName: $(tfStorageAccountName)
         backendAzureRmContainerName: $(tfStorageContainerName)
         backendAzureRmKey: $(tfKey)
-
-    # - task: TerraformTaskV2@2
-    #   displayName: 'Terraform : azurerm plan'
-    #   inputs:
-    #     workingDirectory: src-jjaks
-    #     provider: 'azurerm'
-    #     command: plan
-    #     commandOptions: '-no-color'
-    #     backendServiceArm: $(subscription)
-    #     environmentServiceNameAzureRM: $(subscription)
-    #     backendAzureRmResourceGroupName: $(tfResourceGroupName)
-    #     backendAzureRmStorageAccountName: $(tfStorageAccountName)
-    #     backendAzureRmContainerName: $(tfStorageContainerName)
-    #     backendAzureRmKey: $(tfKey)
+    - task: TerraformTaskV2@2
+      displayName: 'Terraform : azurerm plan'
+      inputs:
+        workingDirectory: src-jjaks
+        provider: 'azurerm'
+        command: plan
+        commandOptions: '-no-color'
+        backendServiceArm: $(subscription)
+        environmentServiceNameAzureRM: $(subscription)
+        backendAzureRmResourceGroupName: $(tfResourceGroupName)
+        backendAzureRmStorageAccountName: $(tfStorageAccountName)
+        backendAzureRmContainerName: $(tfStorageContainerName)
+        backendAzureRmKey: $(tfKey)
     # - task: TerraformTaskV1@0
     #   displayName: 'Terraform : azurerm apply'
     #   inputs:
