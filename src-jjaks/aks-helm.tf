@@ -33,6 +33,10 @@ resource "helm_release" "nginx_ingress" {
     value = "1"
   }
   set {
+    name  = "controller.ingressClassResource.name"
+    value = "nginx-ingress"
+  }
+  set {
     name  = "service.annotations.service\\.beta\\.kubernetes\\.io/azure-dns-label-name"
     value = var.cluster_name
   }
@@ -67,6 +71,9 @@ service:
   loadBalancerIP: ${var.ingress_load_balancer_ip}
   annotations:
     service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+controller:
+  ingressClassResource
+  - name: "nginx-internal"
 extraEnvs:
 - name: KUBERNETES_SERVICE_HOST
   value: ${azurerm_kubernetes_cluster.k8s.fqdn}
