@@ -61,13 +61,12 @@ resource "helm_release" "nginx_ingress_internal" {
   timeout    = 2400
   namespace  = kubernetes_namespace.nginx_ingress_internal.metadata.0.name
   values = [<<EOF
-ingressClass: nginx-internal
+ingressClassName: nginx-internal
 replicaCount: 1
 service:
   loadBalancerIP: ${var.ingress_load_balancer_ip}
   annotations:
     service.beta.kubernetes.io/azure-load-balancer-internal: "true"
-    kubernetes.io/ingress.class: nginx-internal
 extraEnvs:
 - name: KUBERNETES_SERVICE_HOST
   value: ${azurerm_kubernetes_cluster.k8s.fqdn}
