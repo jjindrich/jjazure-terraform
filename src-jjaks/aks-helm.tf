@@ -72,8 +72,8 @@ service:
   annotations:
     service.beta.kubernetes.io/azure-load-balancer-internal: "true"
 controller:
-  ingressClassResource
-  - name: "nginx-internal"
+  ingressClassResource:
+    name: nginx-internal
 extraEnvs:
 - name: KUBERNETES_SERVICE_HOST
   value: ${azurerm_kubernetes_cluster.k8s.fqdn}
