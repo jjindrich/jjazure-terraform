@@ -33,10 +33,6 @@ resource "helm_release" "nginx_ingress" {
     value = "1"
   }
   set {
-    name  = "controller.ingressClassResource.name"
-    value = "nginx-ingress"
-  }
-  set {
     name  = "service.annotations.service\\.beta\\.kubernetes\\.io/azure-dns-label-name"
     value = var.cluster_name
   }
@@ -51,9 +47,8 @@ resource "helm_release" "nginx_ingress" {
   depends_on = [kubernetes_namespace.nginx_ingress]
 }
 
-// issue: https://github.com/Azure/AKS/issues/2580
-
 # Install nginx ingress controller Internal
+# docs https://docs.nginx.com/nginx-ingress-controller/installation/installation-with-helm/
 resource "kubernetes_namespace" "nginx_ingress_internal" {
   metadata {
     name = "ingress-basic-internal"
@@ -61,24 +56,34 @@ resource "kubernetes_namespace" "nginx_ingress_internal" {
   depends_on = [azurerm_kubernetes_cluster.k8s, azurerm_role_assignment.k8s-rbac-network]
 }
 resource "helm_release" "nginx_ingress_internal" {
-  name       = "nginx-ingress-internal-controller"
-  repository = "https://charts.bitnami.com/bitnami"
-  chart      = "nginx-ingress-controller"
+  name       = "nginx-ingress-internal"
+  repository = "https://kubernetes.github.io/ingress-nginx"
+  chart      = "ingress-nginx"
   timeout    = 2400
   namespace  = kubernetes_namespace.nginx_ingress_internal.metadata.0.name
-  values = [<<EOF
-replicaCount: 1
-service:
-  loadBalancerIP: ${var.ingress_load_balancer_ip}
-  annotations:
-    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
-controller:
-  ingressClassResource:
-    name: nginx-internal
-extraEnvs:
-- name: KUBERNETES_SERVICE_HOST
-  value: ${azurerm_kubernetes_cluster.k8s.fqdn}
-EOF
-  ]
+  set {
+    name  = "replicaCount"
+    value = "1"
+  }
+  set {
+    name  = "controller.service.loadBalancerIP"
+    value = var.ingress_load_balancer_ip
+  }
+  set {
+    name  = "controller.service.annotations.service\\.beta\\.kubernetes\\.io/azure-load-balancer-internal"
+    value = "true"
+  }
+  set {
+    name  = "controller.ingressClassResource.name"
+    value = "nginx-internal"
+  }
+  set {
+    name  = "extraEnvs[0].name"
+    value = "KUBERNETES_SERVICE_HOST"
+  }
+  set {
+    name  = "extraEnvs[0].value"
+    value = azurerm_kubernetes_cluster.k8s.fqdn
+  }
   depends_on = [kubernetes_namespace.nginx_ingress_internal]
 }
