@@ -51,6 +51,8 @@ resource "helm_release" "nginx_ingress" {
   depends_on = [kubernetes_namespace.nginx_ingress]
 }
 
+// issue: https://github.com/Azure/AKS/issues/2580
+
 # Install nginx ingress controller Internal
 resource "kubernetes_namespace" "nginx_ingress_internal" {
   metadata {
@@ -65,7 +67,6 @@ resource "helm_release" "nginx_ingress_internal" {
   timeout    = 2400
   namespace  = kubernetes_namespace.nginx_ingress_internal.metadata.0.name
   values = [<<EOF
-ingressClassName: nginx-internal
 replicaCount: 1
 service:
   loadBalancerIP: ${var.ingress_load_balancer_ip}
