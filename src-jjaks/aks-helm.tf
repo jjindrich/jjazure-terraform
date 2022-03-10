@@ -23,9 +23,9 @@ resource "kubernetes_namespace" "nginx_ingress" {
   depends_on = [azurerm_kubernetes_cluster.k8s]
 }
 resource "helm_release" "nginx_ingress" {
-  name       = "nginx-ingress-controller"
-  repository = "https://charts.bitnami.com/bitnami"
-  chart      = "nginx-ingress-controller"
+  name       = "nginx-ingress"
+  repository = "https://kubernetes.github.io/ingress-nginx"
+  chart      = "ingress-nginx"
   timeout    = 2400
   namespace  = kubernetes_namespace.nginx_ingress.metadata.0.name
   set {
@@ -33,7 +33,7 @@ resource "helm_release" "nginx_ingress" {
     value = "1"
   }
   set {
-    name  = "service.annotations.service\\.beta\\.kubernetes\\.io/azure-dns-label-name"
+    name  = "controller.service.annotations.service\\.beta\\.kubernetes\\.io/azure-dns-label-name"
     value = var.cluster_name
   }
   set {
