@@ -13,6 +13,7 @@ provider "kubernetes" {
   client_certificate     = base64decode(azurerm_kubernetes_cluster.k8s.kube_admin_config.0.client_certificate)
   client_key             = base64decode(azurerm_kubernetes_cluster.k8s.kube_admin_config.0.client_key)
   cluster_ca_certificate = base64decode(azurerm_kubernetes_cluster.k8s.kube_admin_config.0.cluster_ca_certificate)
+  experiments { manifest_resource = true }
 }
 
 # Install nginx ingress controller
@@ -86,4 +87,53 @@ resource "helm_release" "nginx_ingress_internal" {
     value = azurerm_kubernetes_cluster.k8s.fqdn
   }
   depends_on = [kubernetes_namespace.nginx_ingress_internal]
+}
+
+# Install LetsEncrypt Cluster Manager
+resource "kubernetes_namespace" "cert-manager" {
+  metadata {
+    name = "cert-manager"
+  }
+  depends_on = [azurerm_kubernetes_cluster.k8s]
+}
+resource "helm_release" "cert-manager" {
+  name       = "cert-manager"
+  repository = "https://charts.jetstack.io"
+  chart      = "cert-manager"
+  timeout    = 2400
+  namespace  = kubernetes_namespace.cert-manager.metadata.0.name
+  version = "v1.7.1"
+  set {
+    name  = "installCRDs"
+    value = "true"
+  }
+  depends_on = [kubernetes_namespace.cert-manager]
+}
+resource "kubernetes_manifest" "clusterissuer_letsencrypt_prod" {
+  manifest = {
+    "apiVersion" = "cert-manager.io/v1"
+    "kind" = "ClusterIssuer"
+    "metadata" = {
+      "name" = "letsencrypt-prod"
+    }
+    "spec" = {
+      "acme" = {
+        "email" = "jajindri@microsoft.com"
+        "privateKeySecretRef" = {
+          "name" = "letsencrypt-prod"
+        }
+        "server" = "https://acme-v02.api.letsencrypt.org/directory"
+        "solvers" = [
+          {
+            "http01" = {
+              "ingress" = {
+                "class" = "nginx"
+              }
+            }
+          },
+        ]
+      }
+    }
+  }
+  depends_on = [helm_release.cert-manager]
 }
