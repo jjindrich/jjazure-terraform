@@ -9,11 +9,12 @@ resource "azurerm_kubernetes_cluster" "k8s" {
   default_node_pool {
     name                = "agentpool"
     min_count           = 1
-    max_count           = 3
+    max_count           = 5
     vm_size             = "Standard_B2s"
-    availability_zones  = [1, 2, 3]
+    zones               = [1, 2, 3]
     enable_auto_scaling = true
     vnet_subnet_id      = data.azurerm_subnet.akssubnet.id
+    #scale_down_mode     = "Deallocate"
   }
 
   windows_profile {
@@ -21,32 +22,20 @@ resource "azurerm_kubernetes_cluster" "k8s" {
     admin_password = data.azurerm_key_vault_secret.node_windows_password.value
   }
 
-  role_based_access_control {
-    enabled = true
-    azure_active_directory {
+  azure_active_directory_role_based_access_control {
+      managed = true
       admin_group_object_ids = [
         var.aad_aks_admin_role
       ]
-      managed = true
-    }
   }
 
   identity {
     type = "SystemAssigned"
   }
 
-
-  addon_profile {
-    kube_dashboard {
-      enabled = false
-    }
-    oms_agent {
-      enabled                    = true
-      log_analytics_workspace_id = data.azurerm_log_analytics_workspace.jjanalytics.id
-    }
-    azure_policy {
-      enabled = true
-    }
+  azure_policy_enabled = true
+  oms_agent {
+    log_analytics_workspace_id = data.azurerm_log_analytics_workspace.jjanalytics.id
   }
 
   network_profile {
@@ -60,12 +49,13 @@ resource "azurerm_kubernetes_cluster_node_pool" "k8s-npwin" {
   name                  = "npwin"
   kubernetes_cluster_id = azurerm_kubernetes_cluster.k8s.id
   vm_size               = "Standard_B2ms"
-  availability_zones    = [1, 2, 3]
+  zones                 = [1, 2, 3]
   os_type               = "Windows"
   enable_auto_scaling   = true
   min_count             = 1
   max_count             = 3
   vnet_subnet_id        = data.azurerm_subnet.akssubnet.id
+  scale_down_mode       = "Deallocate"
   node_taints = [
     "os=windows:NoSchedule"
   ]
