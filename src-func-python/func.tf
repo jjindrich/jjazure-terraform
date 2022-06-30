@@ -14,11 +14,11 @@ resource "azurerm_service_plan" "plan" {
   os_type             = "Linux"
   
   // use App Service Plan
-  sku_name            = "P1v3"
+  //sku_name            = "P1v3"
   
   // use App Service Environment
-  //sku_name            = "I1v2"
-  //app_service_environment_id = azurerm_app_service_environment_v3.ase.id
+  sku_name            = "I1v2"
+  app_service_environment_id = azurerm_app_service_environment_v3.ase.id
 }
 
 resource "azurerm_linux_function_app" "func" {
@@ -46,7 +46,8 @@ resource "azurerm_linux_function_app" "func" {
     "DOCKER_ENABLE_CI"       = true
     "WEBSITE_VNET_ROUTE_ALL" = "1"
     // uncomment to corrupt the function app running on App Service Environment
-    //"JJTEST" = "jjtest"
+    // removes "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING" and "WEBSITE_CONTENTSHARE"
+    //"JJTEST" = "jjtest" 
   }
   builtin_logging_enabled = true
 }

@@ -12,7 +12,7 @@ $Env:ARM_TENANT_ID=$tenant
 $Env:ARM_CLIENT_ID=$clientApplicationId
 $Env:ARM_CLIENT_SECRET=$clientSecret
 
-# https://releases.hashicorp.com/terraform/0.12.23/terraform_0.12.23_windows_amd64.zip
+$acr_password=$(az acr credential show -n jjakscontainers -o tsv --query passwords[0].value)
 
 Write-Output "Check Terraform syntax"
 terraform fmt -check
@@ -21,6 +21,6 @@ Write-Output "Running Terraform deployment"
 terraform init
 #terraform plan
 
-terraform apply -auto-approve
+terraform apply -auto-approve -var acr_password=$acr_password
 
 #terraform destroy -auto-approve
