@@ -46,8 +46,11 @@ resource "azurerm_linux_function_app" "func" {
     "DOCKER_ENABLE_CI"       = true
     "WEBSITE_VNET_ROUTE_ALL" = "1"
     // uncomment to corrupt the function app running on App Service Environment
-    // removes "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING" and "WEBSITE_CONTENTSHARE"
+    // removes "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING" and "WEBSITE_CONTENTSHARE" when running update
     //"JJTEST" = "jjtest" 
   }
+  // workaround to fix it -> use always: content_share_force_disabled = true
+  //content_share_force_disabled = true
+
   builtin_logging_enabled = true
 }
