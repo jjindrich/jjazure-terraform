@@ -90,6 +90,7 @@ resource "helm_release" "nginx_ingress_internal" {
 }
 
 # Install LetsEncrypt Cluster Manager
+# BUG: nejdrive je potreba zkusit instalaci rucne, pak to projde - https://docs.microsoft.com/en-us/azure/aks/ingress-tls?tabs=azure-powershell
 resource "kubernetes_namespace" "cert-manager" {
   metadata {
     name = "cert-manager"
