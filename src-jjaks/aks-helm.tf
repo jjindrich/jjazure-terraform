@@ -13,7 +13,6 @@ provider "kubernetes" {
   client_certificate     = base64decode(azurerm_kubernetes_cluster.k8s.kube_admin_config.0.client_certificate)
   client_key             = base64decode(azurerm_kubernetes_cluster.k8s.kube_admin_config.0.client_key)
   cluster_ca_certificate = base64decode(azurerm_kubernetes_cluster.k8s.kube_admin_config.0.cluster_ca_certificate)
-  experiments { manifest_resource = true }
 }
 
 # Install nginx ingress controller
@@ -90,7 +89,6 @@ resource "helm_release" "nginx_ingress_internal" {
 }
 
 # Install LetsEncrypt Cluster Manager
-# BUG: nejdrive je potreba zkusit instalaci rucne, pak to projde - https://docs.microsoft.com/en-us/azure/aks/ingress-tls?tabs=azure-powershell
 resource "kubernetes_namespace" "cert-manager" {
   metadata {
     name = "cert-manager"
@@ -110,25 +108,26 @@ resource "helm_release" "cert-manager" {
   }
   depends_on = [kubernetes_namespace.cert-manager]
 }
+# BUG: nejdrive musi cluster existovat, pak lze udelat manifest
 resource "kubernetes_manifest" "clusterissuer_letsencrypt_prod" {
   manifest = {
-    "apiVersion" = "cert-manager.io/v1"
-    "kind" = "ClusterIssuer"
-    "metadata" = {
-      "name" = "letsencrypt-prod"
+    apiVersion = "cert-manager.io/v1"
+    kind = "ClusterIssuer"
+    metadata = {
+      name = "letsencrypt-prod"
     }
-    "spec" = {
-      "acme" = {
-        "email" = "jajindri@microsoft.com"
-        "privateKeySecretRef" = {
-          "name" = "letsencrypt-prod"
+    spec = {
+      acme = {
+        email = "jajindri@microsoft.com"
+        privateKeySecretRef = {
+          name = "letsencrypt-prod"
         }
-        "server" = "https://acme-v02.api.letsencrypt.org/directory"
-        "solvers" = [
+        server = "https://acme-v02.api.letsencrypt.org/directory"
+        solvers = [
           {
-            "http01" = {
-              "ingress" = {
-                "class" = "nginx"
+            http01 = {
+              ingress = {
+                class = "nginx"
               }
             }
           },
@@ -136,5 +135,5 @@ resource "kubernetes_manifest" "clusterissuer_letsencrypt_prod" {
       }
     }
   }
-  depends_on = [helm_release.cert-manager]
+  depends_on = [helm_release.cert-manager]  
 }

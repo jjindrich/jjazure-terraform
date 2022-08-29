@@ -11,6 +11,7 @@ $Env:ARM_SUBSCRIPTION_ID=$subscription
 $Env:ARM_TENANT_ID=$tenant
 $Env:ARM_CLIENT_ID=$clientApplicationId
 $Env:ARM_CLIENT_SECRET=$clientSecret
+#$Env:TF_LOG="debug"
 
 # https://releases.hashicorp.com/terraform/0.12.23/terraform_0.12.23_windows_amd64.zip
 
