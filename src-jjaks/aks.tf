@@ -4,7 +4,7 @@ resource "azurerm_kubernetes_cluster" "k8s" {
   location            = local.location
   resource_group_name = azurerm_resource_group.k8s.name
   dns_prefix          = var.cluster_name
-  node_resource_group = var.resource_group_node_name
+  # node_resource_group = var.resource_group_node_name
 
   default_node_pool {
     name                = "agentpool"
@@ -17,16 +17,9 @@ resource "azurerm_kubernetes_cluster" "k8s" {
     #scale_down_mode     = "Deallocate"
   }
 
-  windows_profile {
-    admin_username = "cloudadmin"
-    admin_password = data.azurerm_key_vault_secret.node_windows_password.value
-  }
-
   azure_active_directory_role_based_access_control {
-      managed = true
-      admin_group_object_ids = [
-        var.aad_aks_admin_role
-      ]
+    managed            = true
+    azure_rbac_enabled = true
   }
 
   identity {
@@ -71,12 +64,12 @@ resource "azurerm_role_assignment" "k8s-rbac-network" {
 
 # permission to access ACR
 resource "azurerm_role_assignment" "k8s-rbac-acr" {
-  scope                = data.azurerm_container_registry.acr.id
+  scope                = azurerm_container_registry.acr.id
   role_definition_name = "AcrPull"
   principal_id         = azurerm_kubernetes_cluster.k8s.identity[0].principal_id
 }
 resource "azurerm_role_assignment" "k8s-kubelet-rbac-acr" {
-  scope                = data.azurerm_container_registry.acr.id
+  scope                = azurerm_container_registry.acr.id
   role_definition_name = "AcrPull"
   principal_id         = azurerm_kubernetes_cluster.k8s.kubelet_identity[0].object_id
 }

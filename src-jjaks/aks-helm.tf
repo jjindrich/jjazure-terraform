@@ -108,8 +108,9 @@ resource "helm_release" "cert-manager" {
   }
   depends_on = [kubernetes_namespace.cert-manager]
 }
-# BUG: nejdrive musi cluster existovat, pak lze udelat manifest
+# BUG: nejdrive musi existovat cluster a cert-manager, pak lze udelat manifest (nesmi bezet v prvnim behu)
 resource "kubernetes_manifest" "clusterissuer_letsencrypt_prod" {
+  count = var.aks_first_deployment ? 0 : 1
   manifest = {
     apiVersion = "cert-manager.io/v1"
     kind = "ClusterIssuer"

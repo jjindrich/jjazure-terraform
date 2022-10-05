@@ -1,12 +1,12 @@
 locals {
   location = "westeurope"
   network_reference = {
-    network_name        = "JJDevV2NetworkApp"
-    subnet_name         = "DmzAks"
-    resource_group_name = "JJDevV2-Infra"
+    network_name        = "jjazappvnet"
+    subnet_name         = "aks-snet"
+    resource_group_name = "jjnetwork-rg"
   }
   monitoring = {
-    analytics_name      = "jjdev-analytics"
-    resource_group_name = "jjdevmanagement"
+    analytics_name      = "jjazworkspace"
+    resource_group_name = "jjinfra-rg"
   }
 }

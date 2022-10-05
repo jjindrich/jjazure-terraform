@@ -1,5 +1,3 @@
-# resources for applications
-
 # namespaces for JJWeb application
 resource "kubernetes_namespace" "jjweb-ns" {
   metadata {
