@@ -24,6 +24,9 @@ jobs:
         working-directory: src-jjaks
     env:
        ARM_USE_MSI: true
+       ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+       ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+       ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }} 
 
     steps:
     - name: Checkout
