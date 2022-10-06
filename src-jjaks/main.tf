@@ -23,6 +23,11 @@ terraform {
 
 provider "azurerm" {
   features {}
+  use_oidc        = true
+
+  # for GitHub Actions
+  oidc_request_token = var.oidc_request_token
+  oidc_request_url   = var.oidc_request_url
 }
 
 # required permissions to run TF scripts (creates Azure resources and configuring access for System Manageged Identity)
