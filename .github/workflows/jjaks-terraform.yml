@@ -32,12 +32,12 @@ jobs:
        TF_LOG: debug
 
     steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
     - name: Call printenv to see all envs
       shell: bash
       run: printenv
-      
-    - name: Checkout
-      uses: actions/checkout@v2
 
     # - name: OIDC Login to Azure Public Cloud
     #   uses: Azure/login@v1
