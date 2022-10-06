@@ -23,8 +23,7 @@ jobs:
         shell: bash
         working-directory: src-jjaks
     env:
-       ARM_USE_MSI: true
-       ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }} 
+       ARM_USE_CLI: true
 
     steps:
     - name: Checkout
