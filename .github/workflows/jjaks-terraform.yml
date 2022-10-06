@@ -32,9 +32,6 @@ jobs:
        TF_LOG: debug
 
     steps:
-    - name: ENV
-      run: printenv
-
     - name: Checkout
       uses: actions/checkout@v2
 
