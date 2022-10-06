@@ -6,15 +6,14 @@ on:
 jobs:
   demo:
     runs-on: ubuntu-latest
-    permissions:
-      id-token: write
     steps:
-      - name: Azure Login
+      - name: OIDC Login to Azure Public Cloud
         uses: Azure/login@v1.4.3
         with:
-          client-id: 9dd430a4-4204-4c1e-b40d-414155e3230c
-          tenant-id: 3e57d8e7-0aab-4374-a965-7a968fc4ec78
-          subscription-id: eb1d6021-9f80-4613-b383-2bd8c4d31f09
-          
+            client-id: ${{ secrets.AZURE_CLIENT_ID }}
+            tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+            subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }} 
+        # using User Managed Identity and Federated credentials
+        # https://learn.microsoft.com/en-us/azure/developer/github/connect-from-azure
       - name: Test
         run: az group list -o table
