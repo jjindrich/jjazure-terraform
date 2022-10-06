@@ -24,7 +24,7 @@ jobs:
         working-directory: src-jjaks
     env:
       # https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/guides/service_principal_oidc
-       #ARM_USE_CLI: true
+       ARM_USE_CLI: false
        #ARM_USE_MSI: true
        ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
        ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
