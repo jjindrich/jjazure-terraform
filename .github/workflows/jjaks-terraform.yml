@@ -24,7 +24,6 @@ jobs:
         working-directory: src-jjaks
     env:
        ARM_USE_MSI: true
-       ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
 
     steps:
     - name: Checkout
