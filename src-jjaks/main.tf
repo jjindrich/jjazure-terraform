@@ -23,7 +23,6 @@ terraform {
 
 provider "azurerm" {
   features {}
-  use_oidc        = true
 }
 
 # required permissions to run TF scripts (creates Azure resources and configuring access for System Manageged Identity)
