@@ -1,4 +1,8 @@
 name: 'jjaks-terraform'
+# Requirements: 
+#   Azure User Managed Identity with Federated credentials for GH Actions
+#   Permissions: Contributor + User Access Administrator scope Subscription
+#   GitHub repository secrets
 
 on:  
   workflow_dispatch:  
@@ -53,7 +57,7 @@ jobs:
       run: terraform init
 
     - name: Terraform Plan
-      run: terraform plan -var aks_first_deployment=false
+      run: terraform plan -var aks_first_deployment=${{ inputs.aks_first_deployment }}
 
     - name: Terraform Apply
       if: ${{ (github.ref == 'refs/heads/master' && github.event_name == 'push') || (github.event_name == 'workflow_dispatch') }}
