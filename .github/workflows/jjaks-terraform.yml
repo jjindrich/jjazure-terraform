@@ -2,6 +2,12 @@ name: 'jjaks-terraform'
 
 on:  
   workflow_dispatch:  
+    inputs:
+      aks_first_deployment:
+        description: 'Is it first AKS deployment ?'
+        default: false
+        required: false
+        type: boolean  
 #  push:
 #    branches:
 #    - master    
@@ -33,10 +39,6 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
-    - name: Call printenv to see all envs
-      shell: bash
-      run: printenv
-
     - name: OIDC Login to Azure Public Cloud (using Azure User Managed Identity)
       uses: Azure/login@v1
       with:
@@ -51,11 +53,11 @@ jobs:
       run: terraform init
 
     - name: Terraform Plan
-      run: terraform plan
+      run: terraform plan -var aks_first_deployment=false
 
     - name: Terraform Apply
       if: ${{ (github.ref == 'refs/heads/master' && github.event_name == 'push') || (github.event_name == 'workflow_dispatch') }}
-      run: terraform apply -auto-approve
+      run: terraform apply -auto-approve -var aks_first_deployment=${{ inputs.aks_first_deployment }}
 
     - name: Terraform Output
       run: terraform output kube_config_raw
