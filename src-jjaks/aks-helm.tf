@@ -101,7 +101,7 @@ resource "helm_release" "cert-manager" {
   chart      = "cert-manager"
   timeout    = 2400
   namespace  = kubernetes_namespace.cert-manager.metadata.0.name
-  version = "v1.7.1"
+  version    = "v1.7.1"
   set {
     name  = "installCRDs"
     value = "true"
@@ -113,7 +113,7 @@ resource "kubernetes_manifest" "clusterissuer_letsencrypt_prod" {
   count = var.aks_first_deployment ? 0 : 1
   manifest = {
     apiVersion = "cert-manager.io/v1"
-    kind = "ClusterIssuer"
+    kind       = "ClusterIssuer"
     metadata = {
       name = "letsencrypt-prod"
     }
@@ -136,5 +136,5 @@ resource "kubernetes_manifest" "clusterissuer_letsencrypt_prod" {
       }
     }
   }
-  depends_on = [helm_release.cert-manager]  
+  depends_on = [helm_release.cert-manager]
 }

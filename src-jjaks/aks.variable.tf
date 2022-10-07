@@ -2,4 +2,9 @@ variable "resource_group_name" {}
 variable "cluster_name" {}
 variable "ingress_load_balancer_ip" {}
 variable "acr_name" {}
+variable "kv_name" {}
+variable "app_insights_name" {}
+variable "app_config_name" {}
+variable "sql_server_name" {}
+variable "sql_db_name" {}
 variable "aks_first_deployment" {}
