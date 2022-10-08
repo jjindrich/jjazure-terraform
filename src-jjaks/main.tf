@@ -41,6 +41,18 @@ data "azurerm_log_analytics_workspace" "jjanalytics" {
 data "azurerm_resource_group" "rg-network" {
   name = local.network_reference.resource_group_name
 }
+data "azurerm_key_vault" "jjkeyvault" {
+  name                = local.keyvault_reference.keyvault_name
+  resource_group_name = local.keyvault_reference.resource_group_name
+}
+data "azurerm_key_vault_secret" "sql_password" {
+  name         = "SqlPassword"
+  key_vault_id = data.azurerm_key_vault.jjkeyvault.id
+}
+data "azurerm_user_assigned_identity" "identity_appdeploy" {
+  name                = local.appdeploy_identity_reference.identity_name
+  resource_group_name = local.appdeploy_identity_reference.resource_group_name
+}
 data "azurerm_client_config" "current" {}
 
 # create resource group
@@ -72,23 +84,38 @@ resource "azurerm_app_configuration" "appconfig" {
   resource_group_name = azurerm_resource_group.k8s.name
   location            = local.location
 }
-# TODO add settings
+resource "azurerm_role_assignment" "appconfig_owner" {
+  scope                = azurerm_app_configuration.appconfig.id
+  role_definition_name = "App Configuration Data Owner"
+  principal_id         = data.azurerm_client_config.current.object_id
+}
+resource "azurerm_app_configuration_feature" "appconfig_allowtest" {
+  configuration_store_id = azurerm_app_configuration.appconfig.id
+  name                   = "AllowTests"
+  description            = "Enable Test menu"
+  enabled                = true
+}
+resource "azurerm_app_configuration_feature" "appconfig_allowabout" {
+  configuration_store_id = azurerm_app_configuration.appconfig.id
+  name                   = "AllowAbout"
+  description            = "Enable About menu"
+  enabled                = true
+}
 
-# TODO create Sql server and database
-# resource "azurerm_sql_server" "sqlserver" {
-#   name                         = var.sql_server_name
-#   resource_group_name          = azurerm_resource_group.k8s.name
-#   location                     = local.location
-#   version                      = "12.0"
-#   administrator_login          = "jj"
-#   administrator_login_password = "4-v3ry-53cr37-p455w0rd"
-# }
-# resource "azurerm_sql_database" "sqldb" {
-#   name                = var.sql_db_name
-#   resource_group_name = azurerm_resource_group.k8s.name
-#   location            = local.location
-#   server_name         = azurerm_sql_server.sqlserver.name
-# }
+# create Sql server and database
+# TODO zmenit na serverless
+resource "azurerm_mssql_server" "sqlserver" {
+  name                         = var.sql_server_name
+  resource_group_name          = azurerm_resource_group.k8s.name
+  location                     = local.location
+  version                      = "12.0"
+  administrator_login          = "jj"
+  administrator_login_password = data.azurerm_key_vault_secret.sql_password.value
+}
+resource "azurerm_mssql_database" "sqldb" {
+  name      = var.sql_db_name
+  server_id = azurerm_mssql_server.sqlserver.id
+}
 
 # create Keyvault with secrets
 resource "azurerm_key_vault" "kv" {
@@ -99,20 +126,33 @@ resource "azurerm_key_vault" "kv" {
   soft_delete_retention_days = 7
   purge_protection_enabled   = false
   sku_name                   = "standard"
-  access_policy {
-    tenant_id = data.azurerm_client_config.current.tenant_id
-    object_id = data.azurerm_client_config.current.object_id
-
-    secret_permissions = [
-      "Set",
-      "Get",
-      "Delete",
-      "Purge",
-      "Recover"
-    ]
-  }
 }
-# TODO access policy for github-app user managed identity
+resource "azurerm_key_vault_access_policy" "kv_access_current" {
+  key_vault_id = azurerm_key_vault.kv.id
+  tenant_id    = data.azurerm_client_config.current.tenant_id
+  object_id    = data.azurerm_client_config.current.object_id
+  secret_permissions = [
+    "Set",
+    "Get",
+    "Delete",
+    "Purge",
+    "List",
+    "Recover"
+  ]
+}
+resource "azurerm_key_vault_access_policy" "kv_access_app" {
+  key_vault_id = azurerm_key_vault.kv.id
+  tenant_id    = data.azurerm_client_config.current.tenant_id
+  object_id    = data.azurerm_user_assigned_identity.identity_appdeploy.client_id
+  secret_permissions = [
+    "Set",
+    "Get",
+    "Delete",
+    "Purge",
+    "List",
+    "Recover"
+  ]
+}
 resource "azurerm_key_vault_secret" "kv_appInsightsConfig" {
   name         = "appInsightsConfig"
   value        = azurerm_application_insights.appinsights.connection_string
@@ -128,9 +168,9 @@ resource "azurerm_key_vault_secret" "kv_appConfig" {
   value        = azurerm_app_configuration.appconfig.primary_read_key[0].connection_string
   key_vault_id = azurerm_key_vault.kv.id
 }
-# resource "azurerm_key_vault_secret" "kv_contactsDbConnection" {
-#   name         = "contactsDbConnection"
-#   value        = 
-#   key_vault_id = azurerm_key_vault.kv.id
-# }
+resource "azurerm_key_vault_secret" "kv_contactsDbConnection" {
+  name         = "contactsDbConnection"
+  value        = "Server=tcp:${azurerm_mssql_server.sqlserver.name}.database.windows.net,1433;Initial Catalog=${azurerm_mssql_database.sqldb.name};Persist Security Info=False;User ID=jj;Password=${data.azurerm_key_vault_secret.sql_password.value};MultipleActiveResultSets=True;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
+  key_vault_id = azurerm_key_vault.kv.id
+}
 
