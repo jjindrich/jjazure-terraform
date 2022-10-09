@@ -137,20 +137,24 @@ resource "azurerm_key_vault_access_policy" "kv_access_current" {
     "Delete",
     "Purge",
     "List",
-    "Recover"
+    "Recover",
+    "Backup",
+    "Restore"
   ]
 }
 resource "azurerm_key_vault_access_policy" "kv_access_app" {
   key_vault_id = azurerm_key_vault.kv.id
   tenant_id    = data.azurerm_client_config.current.tenant_id
-  object_id    = data.azurerm_user_assigned_identity.identity_appdeploy.id
+  object_id    = data.azurerm_user_assigned_identity.identity_appdeploy.principal_id
   secret_permissions = [
     "Set",
     "Get",
     "Delete",
     "Purge",
     "List",
-    "Recover"
+    "Recover",
+    "Backup",
+    "Restore"
   ]
 }
 resource "azurerm_key_vault_secret" "kv_appInsightsConfig" {
