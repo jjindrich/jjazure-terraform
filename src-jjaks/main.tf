@@ -119,8 +119,13 @@ resource "azurerm_mssql_firewall_rule" "sqlserver_fw" {
   end_ip_address   = "0.0.0.0"
 }
 resource "azurerm_mssql_database" "sqldb" {
-  name      = var.sql_db_name
-  server_id = azurerm_mssql_server.sqlserver.id
+  name                        = var.sql_db_name
+  server_id                   = azurerm_mssql_server.sqlserver.id
+  sku_name                    = "GP_S_Gen5_1"
+  auto_pause_delay_in_minutes = 60
+  max_size_gb                 = 32
+  min_capacity                = 0.5
+
 }
 
 # create Keyvault with secrets
