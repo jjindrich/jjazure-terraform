@@ -112,6 +112,12 @@ resource "azurerm_mssql_server" "sqlserver" {
   administrator_login          = "jj"
   administrator_login_password = data.azurerm_key_vault_secret.sql_password.value
 }
+resource "azurerm_mssql_firewall_rule" "sqlserver_fw" {
+  name             = "AllAzureServices"
+  server_id        = azurerm_mssql_server.sqlserver.id
+  start_ip_address = "0.0.0.0"
+  end_ip_address   = "0.0.0.0"
+}
 resource "azurerm_mssql_database" "sqldb" {
   name      = var.sql_db_name
   server_id = azurerm_mssql_server.sqlserver.id
@@ -174,7 +180,7 @@ resource "azurerm_key_vault_secret" "kv_appConfig" {
 }
 resource "azurerm_key_vault_secret" "kv_contactsDbConnection" {
   name         = "contactsDbConnection"
-  value        = "Server=tcp:${azurerm_mssql_server.sqlserver.name}.database.windows.net,1433;Initial Catalog=${azurerm_mssql_database.sqldb.name};Persist Security Info=False;User ID=jj;Password=${data.azurerm_key_vault_secret.sql_password.value};MultipleActiveResultSets=True;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
+  value        = "Server=tcp:${azurerm_mssql_server.sqlserver.name}.database.windows.net\\,1433;Initial Catalog=${azurerm_mssql_database.sqldb.name};Persist Security Info=False;User ID=jj;Password=${data.azurerm_key_vault_secret.sql_password.value};MultipleActiveResultSets=True;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
   key_vault_id = azurerm_key_vault.kv.id
 }
 
