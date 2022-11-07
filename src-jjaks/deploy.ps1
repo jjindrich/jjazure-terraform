@@ -10,7 +10,7 @@ terraform fmt -check
 Write-Output "Running Terraform deployment"
 terraform init
 
-#terraform plan
+#terraform plan -var aks_first_deployment=false
 
 #terraform apply -auto-approve -var aks_first_deployment=true
 terraform apply -auto-approve -var aks_first_deployment=false

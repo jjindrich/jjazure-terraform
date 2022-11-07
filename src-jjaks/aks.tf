@@ -44,6 +44,9 @@ resource "azurerm_kubernetes_cluster_node_pool" "k8s-npwin" {
   vm_size               = "Standard_B2ms"
   zones                 = [1, 2, 3]
   os_type               = "Windows"
+  // not possible to use Windows2022 now
+  //os_sku                = "Windows2022"
+  // workaround: az aks nodepool add --resource-group jjmicroservices-rg --cluster-name jjazaks --name npwin --os-sku Windows2022 --os-type Windows --node-vm-size Standard_B2ms --zones 1 2 3 --node-taints os=windows:NoSchedule  
   enable_auto_scaling   = true
   min_count             = 1
   max_count             = 3
