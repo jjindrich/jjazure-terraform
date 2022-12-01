@@ -75,6 +75,7 @@ resource "azurerm_application_insights" "appinsights" {
   name                = var.app_insights_name
   location            = local.location
   resource_group_name = azurerm_resource_group.k8s.name
+  workspace_id        = data.azurerm_log_analytics_workspace.jjanalytics.id
   application_type    = "web"
 }
 
