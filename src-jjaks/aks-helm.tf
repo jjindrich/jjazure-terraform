@@ -78,6 +78,10 @@ resource "helm_release" "nginx_ingress_internal" {
     value = "nginx-internal"
   }
   set {
+    name  = "controller.ingressClassResource.name"
+    value = "nginx-internal"
+  }
+  set {
     name  = "extraEnvs[0].name"
     value = "KUBERNETES_SERVICE_HOST"
   }
