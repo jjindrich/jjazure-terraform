@@ -74,7 +74,7 @@ resource "helm_release" "nginx_ingress_internal" {
     value = "true"
   }
   set {
-    name  = "controller.ingressClassResource.name"
+    name  = "controller.ingressClass"
     value = "nginx-internal"
   }
   set {
