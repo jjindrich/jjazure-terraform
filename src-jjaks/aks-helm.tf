@@ -48,7 +48,7 @@ resource "helm_release" "nginx_ingress" {
 }
 
 # Install nginx ingress controller Internal
-# docs https://docs.nginx.com/nginx-ingress-controller/installation/installation-with-helm/
+# https://kubernetes.github.io/ingress-nginx/
 resource "kubernetes_namespace" "nginx_ingress_internal" {
   metadata {
     name = "ingress-basic-internal"
@@ -80,6 +80,18 @@ resource "helm_release" "nginx_ingress_internal" {
   set {
     name  = "controller.ingressClassResource.name"
     value = "nginx-internal"
+  }
+  set {
+    name  = "controller.ingressClassResource.controllerValue"
+    value = "example.com/nginx-internal"
+  }
+  set {
+    name  = "controller.ingressClassResource.enabled"
+    value = "true"
+  }
+  set {
+    name  = "controller.ingressClassByName"
+    value = "true"
   }
   set {
     name  = "extraEnvs[0].name"
