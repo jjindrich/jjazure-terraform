@@ -117,13 +117,14 @@ resource "helm_release" "cert-manager" {
   chart      = "cert-manager"
   timeout    = 2400
   namespace  = kubernetes_namespace.cert-manager.metadata.0.name
-  version    = "v1.7.1"
+  version    = "v1.10.1"
   set {
     name  = "installCRDs"
     value = "true"
   }
   depends_on = [kubernetes_namespace.cert-manager]
 }
+
 # BUG: nejdrive musi existovat cluster a cert-manager, pak lze udelat manifest (nesmi bezet v prvnim behu)
 resource "kubernetes_manifest" "clusterissuer_letsencrypt_prod" {
   count = var.aks_first_deployment ? 0 : 1

@@ -60,6 +60,11 @@ resource "azurerm_resource_group" "k8s" {
   name     = var.resource_group_name
   location = local.location
 }
+resource "azurerm_role_assignment" "k8s_contributor" {
+  scope                = azurerm_resource_group.k8s.id
+  role_definition_name = "Contributor"
+  principal_id         = data.azurerm_user_assigned_identity.identity_appdeploy.principal_id
+}
 
 # create ACR
 resource "azurerm_container_registry" "acr" {
@@ -95,16 +100,21 @@ resource "azurerm_app_configuration_feature" "appconfig_allowtest" {
   name                   = "AllowTests"
   description            = "Enable Test menu"
   enabled                = true
+  depends_on = [
+    azurerm_role_assignment.appconfig_owner
+  ]
 }
 resource "azurerm_app_configuration_feature" "appconfig_allowabout" {
   configuration_store_id = azurerm_app_configuration.appconfig.id
   name                   = "AllowAbout"
   description            = "Enable About menu"
   enabled                = true
+  depends_on = [
+    azurerm_role_assignment.appconfig_owner
+  ]
 }
 
 # create Sql server and database
-# TODO zmenit na serverless
 resource "azurerm_mssql_server" "sqlserver" {
   name                         = var.sql_server_name
   resource_group_name          = azurerm_resource_group.k8s.name
@@ -173,20 +183,32 @@ resource "azurerm_key_vault_secret" "kv_appInsightsConfig" {
   name         = "appInsightsConfig"
   value        = azurerm_application_insights.appinsights.connection_string
   key_vault_id = azurerm_key_vault.kv.id
+  depends_on = [
+    azurerm_key_vault_access_policy.kv_access_current
+  ]
 }
 resource "azurerm_key_vault_secret" "kv_appInsightsKey" {
   name         = "appInsightsKey"
   value        = azurerm_application_insights.appinsights.instrumentation_key
   key_vault_id = azurerm_key_vault.kv.id
+  depends_on = [
+    azurerm_key_vault_access_policy.kv_access_current
+  ]
 }
 resource "azurerm_key_vault_secret" "kv_appConfig" {
   name         = "appConfig"
   value        = azurerm_app_configuration.appconfig.primary_read_key[0].connection_string
   key_vault_id = azurerm_key_vault.kv.id
+  depends_on = [
+    azurerm_key_vault_access_policy.kv_access_current
+  ]
 }
 resource "azurerm_key_vault_secret" "kv_contactsDbConnection" {
   name         = "contactsDbConnection"
   value        = "Server=tcp:${azurerm_mssql_server.sqlserver.name}.database.windows.net\\,1433;Initial Catalog=${azurerm_mssql_database.sqldb.name};Persist Security Info=False;User ID=jj;Password=${data.azurerm_key_vault_secret.sql_password.value};MultipleActiveResultSets=True;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
   key_vault_id = azurerm_key_vault.kv.id
+  depends_on = [
+    azurerm_key_vault_access_policy.kv_access_current
+  ]
 }
 

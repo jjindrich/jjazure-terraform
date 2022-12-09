@@ -37,7 +37,7 @@ resource "azurerm_kubernetes_cluster" "k8s" {
     load_balancer_sku = "standard"
   }
 }
-
+/*
 # add Windows nodepool
 resource "azurerm_kubernetes_cluster_node_pool" "k8s-npwin" {
   name                  = "npwin"
@@ -50,6 +50,7 @@ resource "azurerm_kubernetes_cluster_node_pool" "k8s-npwin" {
   // workaround: 
   //   az aks nodepool add --resource-group jjmicroservices-rg --cluster-name jjazaks --name npwin --os-sku Windows2022 --os-type Windows --node-vm-size Standard_B2ms --zones 1 2 3 --node-taints os=windows:NoSchedule  
   //   terraform import azurerm_kubernetes_cluster_node_pool.k8s-npwin /subscriptions/XXXXXXXXXXXXXXX/resourceGroups/jjmicroservices-rg/providers/Microsoft.ContainerService/managedClusters/jjazaks/agentPools/npwin
+  workload_runtime      = "OCIContainer"
   enable_auto_scaling   = true
   min_count             = 1
   max_count             = 3
@@ -60,7 +61,7 @@ resource "azurerm_kubernetes_cluster_node_pool" "k8s-npwin" {
   ]
   depends_on = [azurerm_kubernetes_cluster.k8s]
 }
-
+*/
 # permission to join K8s to virtual network
 resource "azurerm_role_assignment" "k8s-rbac-network" {
   scope                = data.azurerm_resource_group.rg-network.id
