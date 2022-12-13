@@ -37,6 +37,10 @@ resource "helm_release" "nginx_ingress" {
     value = var.cluster_name
   }
   set {
+    name  = "controller.service.annotations.service\\.beta\\.kubernetes\\.io/azure-load-balancer-health-probe-request-path"
+    value = "/healthz"
+  }  
+  set {
     name  = "extraEnvs[0].name"
     value = "KUBERNETES_SERVICE_HOST"
   }
@@ -73,6 +77,7 @@ resource "helm_release" "nginx_ingress_internal" {
     name  = "controller.service.annotations.service\\.beta\\.kubernetes\\.io/azure-load-balancer-internal"
     value = "true"
   }
+  
   set {
     name  = "controller.ingressClass"
     value = "nginx-internal"
