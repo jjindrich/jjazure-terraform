@@ -122,6 +122,8 @@ resource "azurerm_mssql_server" "sqlserver" {
   version                      = "12.0"
   administrator_login          = "jj"
   administrator_login_password = data.azurerm_key_vault_secret.sql_password.value
+  # TODO: private endpoint configuration missing
+  public_network_access_enabled = false
 }
 resource "azurerm_mssql_firewall_rule" "sqlserver_fw" {
   name             = "AllAzureServices"
@@ -136,18 +138,18 @@ resource "azurerm_mssql_database" "sqldb" {
   auto_pause_delay_in_minutes = 60
   max_size_gb                 = 32
   min_capacity                = 0.5
-
 }
 
 # create Keyvault with secrets
 resource "azurerm_key_vault" "kv" {
-  name                       = var.kv_name
-  resource_group_name        = azurerm_resource_group.k8s.name
-  location                   = local.location
-  tenant_id                  = data.azurerm_client_config.current.tenant_id
-  soft_delete_retention_days = 7
-  purge_protection_enabled   = false
-  sku_name                   = "standard"
+  name                            = var.kv_name
+  resource_group_name             = azurerm_resource_group.k8s.name
+  location                        = local.location
+  tenant_id                       = data.azurerm_client_config.current.tenant_id
+  soft_delete_retention_days      = 7
+  purge_protection_enabled        = false
+  sku_name                        = "standard"
+  enabled_for_template_deployment = true
 }
 resource "azurerm_key_vault_access_policy" "kv_access_current" {
   key_vault_id = azurerm_key_vault.kv.id
@@ -212,3 +214,26 @@ resource "azurerm_key_vault_secret" "kv_contactsDbConnection" {
   ]
 }
 
+# Create Grafana and Prometheus workspace
+resource "azurerm_monitor_workspace" "jjprometheus" {
+  name                = var.prometheus_name
+  resource_group_name = azurerm_resource_group.k8s.name
+  location            = local.location
+}
+
+resource "azurerm_dashboard_grafana" "jjgrafana" {
+  name                              = var.grafana_name
+  resource_group_name               = azurerm_resource_group.k8s.name
+  location                          = local.location
+  api_key_enabled                   = true
+  deterministic_outbound_ip_enabled = false
+  public_network_access_enabled     = true
+
+  azure_monitor_workspace_integrations {
+    resource_id = azurerm_monitor_workspace.jjprometheus.id
+  }
+
+  identity {
+    type = "SystemAssigned"
+  }
+}

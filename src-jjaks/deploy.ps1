@@ -6,6 +6,7 @@ Write-Output "Check Terraform syntax"
 terraform fmt -check
 
 Write-Output "Running Terraform deployment"
+#terraform init -upgrade
 terraform init
 
 #terraform plan -var aks_first_deployment=false

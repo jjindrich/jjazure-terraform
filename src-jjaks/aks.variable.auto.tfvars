@@ -8,4 +8,5 @@ app_config_name          = "jjazconfig"
 sql_server_name          = "jjazmssql"
 sql_db_name              = "jjazmssqldb"
 aks_first_deployment     = false
-
+prometheus_name          = "jjazaksprometheus"
+grafana_name             = "jjazaksgrafana"

@@ -4,6 +4,8 @@ variable "ingress_load_balancer_ip" {}
 variable "acr_name" {}
 variable "kv_name" {}
 variable "app_insights_name" {}
+variable "prometheus_name" {}
+variable "grafana_name" {}
 variable "app_config_name" {}
 variable "sql_server_name" {}
 variable "sql_db_name" {}

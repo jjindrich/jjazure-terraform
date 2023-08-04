@@ -6,6 +6,7 @@ resource "azurerm_kubernetes_cluster" "k8s" {
   dns_prefix          = var.cluster_name
   # node_resource_group = var.resource_group_node_name
   # kubernetes_version  = "1.24.6"
+  automatic_channel_upgrade = "patch"
 
   default_node_pool {
     name                = "agentpool"
@@ -30,7 +31,10 @@ resource "azurerm_kubernetes_cluster" "k8s" {
   azure_policy_enabled = true
   oms_agent {
     log_analytics_workspace_id = data.azurerm_log_analytics_workspace.jjanalytics.id
+    msi_auth_for_monitoring_enabled = true
   }
+
+  monitor_metrics {}
 
   network_profile {
     network_plugin    = "azure"
@@ -80,3 +84,45 @@ resource "azurerm_role_assignment" "k8s-kubelet-rbac-acr" {
   role_definition_name = "AcrPull"
   principal_id         = azurerm_kubernetes_cluster.k8s.kubelet_identity[0].object_id
 }
+
+# configure monitoring
+resource "azurerm_monitor_data_collection_endpoint" "aks-endpoint" {
+  name                          = "${var.cluster_name}-metrics-endpoint"
+  resource_group_name           = azurerm_resource_group.k8s.name
+  location                      = local.location
+  kind                          = "Linux"
+  public_network_access_enabled = true
+}
+resource "azurerm_monitor_data_collection_rule" "aks-rule-prometheus" {
+  name                        = "${var.cluster_name}-metrics-rule"
+  resource_group_name         = azurerm_resource_group.k8s.name
+  location                    = local.location
+  data_collection_endpoint_id = azurerm_monitor_data_collection_endpoint.aks-endpoint.id
+
+  destinations {
+    monitor_account {
+      monitor_account_id = azurerm_monitor_workspace.jjprometheus.id
+      name               = "MonitoringAccount1"
+    }
+  }
+
+  data_flow {
+    streams      = ["Microsoft-PrometheusMetrics"]
+    destinations = ["MonitoringAccount1"]
+  }
+
+  data_sources {
+    prometheus_forwarder {
+      name    = "PrometheusDataSource"
+      streams = ["Microsoft-PrometheusMetrics"]
+    }
+  }
+}
+resource "azurerm_monitor_data_collection_rule_association" "aks-rule-association" {
+  name                        = var.cluster_name
+  target_resource_id          = azurerm_kubernetes_cluster.k8s.id
+  data_collection_rule_id     = azurerm_monitor_data_collection_rule.aks-rule-prometheus.id
+}
+
+## TODO: add prometheus and grafana configuration
+# https://github.com/tkubica12/azure-workshops/blob/main/d-aks/terraform/monitoring.tf
