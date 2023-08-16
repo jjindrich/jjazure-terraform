@@ -122,8 +122,7 @@ resource "azurerm_mssql_server" "sqlserver" {
   version                      = "12.0"
   administrator_login          = "jj"
   administrator_login_password = data.azurerm_key_vault_secret.sql_password.value
-  # TODO: private endpoint configuration missing
-  public_network_access_enabled = false
+  public_network_access_enabled = true
 }
 resource "azurerm_mssql_firewall_rule" "sqlserver_fw" {
   name             = "AllAzureServices"
@@ -236,4 +235,10 @@ resource "azurerm_dashboard_grafana" "jjgrafana" {
   identity {
     type = "SystemAssigned"
   }
+}
+
+resource "azurerm_role_assignment" "jjgrafana-role" {
+  scope                = azurerm_resource_group.k8s.id
+  role_definition_name = "Monitoring Reader"
+  principal_id         = azurerm_dashboard_grafana.jjgrafana.identity[0].principal_id
 }

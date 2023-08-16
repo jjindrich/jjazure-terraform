@@ -28,9 +28,12 @@ resource "azurerm_kubernetes_cluster" "k8s" {
     type = "SystemAssigned"
   }
 
+  oidc_issuer_enabled       = true
+  workload_identity_enabled = true
+
   azure_policy_enabled = true
   oms_agent {
-    log_analytics_workspace_id = data.azurerm_log_analytics_workspace.jjanalytics.id
+    log_analytics_workspace_id      = data.azurerm_log_analytics_workspace.jjanalytics.id
     msi_auth_for_monitoring_enabled = true
   }
 
@@ -119,10 +122,7 @@ resource "azurerm_monitor_data_collection_rule" "aks-rule-prometheus" {
   }
 }
 resource "azurerm_monitor_data_collection_rule_association" "aks-rule-association" {
-  name                        = var.cluster_name
-  target_resource_id          = azurerm_kubernetes_cluster.k8s.id
-  data_collection_rule_id     = azurerm_monitor_data_collection_rule.aks-rule-prometheus.id
+  name                    = var.cluster_name
+  target_resource_id      = azurerm_kubernetes_cluster.k8s.id
+  data_collection_rule_id = azurerm_monitor_data_collection_rule.aks-rule-prometheus.id
 }
-
-## TODO: add prometheus and grafana configuration
-# https://github.com/tkubica12/azure-workshops/blob/main/d-aks/terraform/monitoring.tf
