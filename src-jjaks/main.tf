@@ -188,14 +188,6 @@ resource "azurerm_key_vault_secret" "kv_appInsightsConfig" {
     azurerm_key_vault_access_policy.kv_access_current
   ]
 }
-resource "azurerm_key_vault_secret" "kv_appInsightsKey" {
-  name         = "appInsightsKey"
-  value        = azurerm_application_insights.appinsights.instrumentation_key
-  key_vault_id = azurerm_key_vault.kv.id
-  depends_on = [
-    azurerm_key_vault_access_policy.kv_access_current
-  ]
-}
 resource "azurerm_key_vault_secret" "kv_appConfig" {
   name         = "appConfig"
   value        = azurerm_app_configuration.appconfig.primary_read_key[0].connection_string
