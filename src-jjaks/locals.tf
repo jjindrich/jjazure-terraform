@@ -1,13 +1,13 @@
 locals {
-  location = "westeurope"
+  location = "germanywestcentral"
   network_reference = {
-    network_name        = "jjazappvnet"
+    network_name        = "jjazgwappvnet"
     subnet_name         = "aks-snet"
-    resource_group_name = "jjnetwork-rg"
+    resource_group_name = "jjnetwork-gw-rg"
   }
   monitoring = {
-    analytics_name      = "jjazworkspace"
-    resource_group_name = "jjinfra-rg"
+    analytics_name      = "jjazgwworkspace"
+    resource_group_name = "jjinfra-gw-rg"
   }
   keyvault_reference = {
     keyvault_name       = "jjazkeyvault"

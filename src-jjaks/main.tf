@@ -2,7 +2,7 @@ terraform {
   backend "azurerm" {
     resource_group_name  = "jjinfra-rg"
     storage_account_name = "jjaztfstate"
-    container_name       = "jjazaks"
+    container_name       = "jjazgwaks"
     key                  = "terraform.tfstate"
   }
   required_providers {
@@ -204,7 +204,7 @@ resource "azurerm_key_vault_secret" "kv_contactsDbConnection" {
     azurerm_key_vault_access_policy.kv_access_current
   ]
 }
-
+/*
 # Create Grafana and Prometheus workspace
 resource "azurerm_monitor_workspace" "jjprometheus" {
   name                = var.prometheus_name
@@ -234,3 +234,4 @@ resource "azurerm_role_assignment" "jjgrafana-role" {
   role_definition_name = "Monitoring Reader"
   principal_id         = azurerm_dashboard_grafana.jjgrafana.identity[0].principal_id
 }
+*/
