@@ -45,6 +45,12 @@ resource "azurerm_kubernetes_cluster" "k8s" {
     ebpf_data_plane   = "cilium"
     load_balancer_sku = "standard"
   }
+
+  // https://learn.microsoft.com/en-us/azure/aks/app-routing
+  // zatim se nepouziva protoze certifikat musi byt v keyvault
+  web_app_routing {
+    dns_zone_id = ""
+  }
 }
 /*
 # add Windows nodepool
@@ -90,7 +96,6 @@ resource "azurerm_role_assignment" "k8s-kubelet-rbac-acr" {
   principal_id         = azurerm_kubernetes_cluster.k8s.kubelet_identity[0].object_id
 }
 
-/*
 # configure monitoring
 resource "azurerm_monitor_data_collection_endpoint" "aks-endpoint" {
   name                          = "${var.cluster_name}-metrics-endpoint"
@@ -376,4 +381,3 @@ EOF
   }
 }
 # Prometheus rule groups for Windows nodes https://learn.microsoft.com/en-us/azure/azure-monitor/containers/prometheus-metrics-enable?tabs=terraform#download-and-edit-the-templates
-*/

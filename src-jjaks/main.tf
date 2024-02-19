@@ -204,14 +204,15 @@ resource "azurerm_key_vault_secret" "kv_contactsDbConnection" {
     azurerm_key_vault_access_policy.kv_access_current
   ]
 }
-/*
+
+
 # Create Grafana and Prometheus workspace
 resource "azurerm_monitor_workspace" "jjprometheus" {
   name                = var.prometheus_name
   resource_group_name = azurerm_resource_group.k8s.name
   location            = local.location
 }
-
+/*
 resource "azurerm_dashboard_grafana" "jjgrafana" {
   name                              = var.grafana_name
   resource_group_name               = azurerm_resource_group.k8s.name
