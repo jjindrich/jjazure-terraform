@@ -135,7 +135,7 @@ resource "azurerm_monitor_data_collection_rule_association" "aks-rule-associatio
   data_collection_rule_id = azurerm_monitor_data_collection_rule.aks-rule-prometheus.id
 }
 resource "azurerm_monitor_alert_prometheus_rule_group" "node_recording_rules_rule_group" {
-  name                = "NodeRecordingRulesRuleGroup-${var.cluster_name}"
+  name                = "${var.prometheus_name}-NodeRecordingRulesRuleGroup"
   location            = local.location
   resource_group_name = azurerm_resource_group.k8s.name
   cluster_name        = azurerm_kubernetes_cluster.k8s.name
@@ -225,7 +225,7 @@ EOF
 }
 
 resource "azurerm_monitor_alert_prometheus_rule_group" "kubernetes_recording_rules_rule_group" {
-  name                = "KubernetesRecordingRulesRuleGroup-${var.cluster_name}"
+  name                = "${var.prometheus_name}-KubernetesRecordingRulesRuleGroup"
   location            = local.location
   resource_group_name = azurerm_resource_group.k8s.name
   cluster_name        = azurerm_kubernetes_cluster.k8s.name
