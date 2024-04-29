@@ -11,7 +11,7 @@ resource "azurerm_kubernetes_cluster" "k8s" {
   default_node_pool {
     name                = "agentpool"
     min_count           = 1
-    max_count           = 5
+    max_count           = 10
     vm_size             = "Standard_B2s"
     zones               = [1, 2, 3]
     enable_auto_scaling = true
@@ -96,7 +96,51 @@ resource "azurerm_role_assignment" "k8s-kubelet-rbac-acr" {
   principal_id         = azurerm_kubernetes_cluster.k8s.kubelet_identity[0].object_id
 }
 
-# configure monitoring
+# configure monitoring - logs with Container insights
+resource "azurerm_monitor_data_collection_rule" "aks-rule-logs" {
+  name                = "${var.cluster_name}-logs-rule"
+  resource_group_name = azurerm_resource_group.k8s.name
+  location            = local.location
+
+  destinations {
+    log_analytics {
+      workspace_resource_id = data.azurerm_log_analytics_workspace.jjanalytics.id
+      name                  = "ciworkspace"
+    }
+  }
+
+  data_flow {
+    streams      = ["Microsoft-ContainerInsights-Group-Default"]
+    destinations = ["ciworkspace"]
+  }
+
+  data_sources {
+    extension {
+      streams            = ["Microsoft-ContainerInsights-Group-Default"]
+      extension_name     = "ContainerInsights"
+      extension_json     = jsonencode({
+        "dataCollectionSettings" : {
+            "interval": "5m",
+            "namespaceFilteringMode": "Exclude",
+            "namespaces": ["kube-system","gatekeeper-system","azure-arc"],
+            "enableContainerLogV2": true
+        }
+      })
+      name               = "ContainerInsightsExtension"
+    }
+  }
+
+  description = "DCR for Azure Monitor Container Insights"
+}
+
+resource "azurerm_monitor_data_collection_rule_association" "aks-rule-logs-association" {
+  name                    = "ContainerInsightsExtension"
+  target_resource_id      = azurerm_kubernetes_cluster.k8s.id
+  data_collection_rule_id = azurerm_monitor_data_collection_rule.aks-rule-logs.id
+  description             = "Association of container insights data collection rule. Deleting this association will break the data collection for this AKS Cluster."
+}
+
+# configure monitoring - metrics with Prometheus
 resource "azurerm_monitor_data_collection_endpoint" "aks-endpoint" {
   name                          = "${var.cluster_name}-metrics-endpoint"
   resource_group_name           = azurerm_resource_group.k8s.name
