@@ -9,4 +9,4 @@ sql_server_name          = "jjazgwmssql"
 sql_db_name              = "jjazgwmssqldb"
 aks_first_deployment     = false
 prometheus_name          = "jjazgwaksprometheus"
-grafana_name             = "jjazgwaksgrafana"
+grafana_name             = "jjazgwgrafana"

@@ -212,7 +212,6 @@ resource "azurerm_monitor_workspace" "jjprometheus" {
   resource_group_name = azurerm_resource_group.k8s.name
   location            = local.location
 }
-/*
 resource "azurerm_dashboard_grafana" "jjgrafana" {
   name                              = var.grafana_name
   resource_group_name               = azurerm_resource_group.k8s.name
@@ -229,10 +228,8 @@ resource "azurerm_dashboard_grafana" "jjgrafana" {
     type = "SystemAssigned"
   }
 }
-
 resource "azurerm_role_assignment" "jjgrafana-role" {
   scope                = azurerm_resource_group.k8s.id
   role_definition_name = "Monitoring Reader"
   principal_id         = azurerm_dashboard_grafana.jjgrafana.identity[0].principal_id
 }
-*/
